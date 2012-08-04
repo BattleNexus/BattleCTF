@@ -1,5 +1,7 @@
 package com.gamezgalaxy.ctf.blocks;
 
-public class RedFlag {
+import com.gamezgalaxy.GGS.world.blocks.Red;
+
+public class RedFlag extends Red {
 
 }

@@ -5,6 +5,8 @@ import com.gamezgalaxy.ctf.map.Map;
 public abstract class Gamemode {
 	Map _map;
 	
+	private String name;
+	
 	protected boolean running = false;
 	
 	public void setup(Map map) {
@@ -31,6 +33,10 @@ public abstract class Gamemode {
 				return;
 			super.wait(0L);
 		}
+	}
+	
+	public String getGameName() {
+		return (name == null || name.equals("")) ? getClass().getSimpleName() : name;
 	}
 
 }

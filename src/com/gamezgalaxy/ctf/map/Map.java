@@ -14,16 +14,15 @@ import com.gamezgalaxy.ctf.gamemode.Gamemode;
 
 public class Map {
 	public Level level;
-	public int lavax;
-	public int lavay;
-	public int lavaz;
-	public int minx;
-	public int maxx;
-	public int minz;
-	public int maxz;
-	public int mapheight;
+	public int redx;
+	public int redy;
+	public int redz;
+	public int bluex;
+	public int bluey;
+	public int bluez;
 	public String mapname;
-	public SafeZone zone = new SafeZone();
+	public SafeZone bzone = new SafeZone();
+	public SafeZone rzone = new SafeZone();
 	public ArrayList<Gamemode> games = new ArrayList<Gamemode>();
 	
 	public void load(String config) {
@@ -52,34 +51,42 @@ public class Map {
 						Gamemode game = constructor.newInstance();
 						games.add(game);
 					}
-					else if (key.equals("x.spawn"))
-						lavax = Integer.parseInt(value);
-					else if (key.equals("y.spawn"))
-						lavay = Integer.parseInt(value);
-					else if (key.equals("z.spawn"))
-						lavaz = Integer.parseInt(value);
-					else if (key.equals("map.height"))
-						mapheight = Integer.parseInt(value);
-					else if (key.equals("zombie.spawn.smallx"))
-						minx = Integer.parseInt(value);
-					else if (key.equals("zombie.spawn.higherx"))
-						maxx = Integer.parseInt(value);
-					else if (key.equals("zombie.spawn.lowerz"))
-						minz = Integer.parseInt(value);
-					else if (key.equals("zombie.spawn.higherz"))
-						maxz = Integer.parseInt(value);
-					else if (key.equals("safezone.smallx"))
-						zone.setSmallX(Integer.parseInt(value));
-					else if (key.equals("safezone.bigx"))
-						zone.setBigX(Integer.parseInt(value));
-					else if (key.equals("safezone.smally"))
-						zone.setSmallY(Integer.parseInt(value));
-					else if (key.equals("safezone.bigy"))
-						zone.setBigY(Integer.parseInt(value));
-					else if (key.equals("safezone.smallz"))
-						zone.setSmallZ(Integer.parseInt(value));
-					else if (key.equals("safezone.bigz"))
-						zone.setBigZ(Integer.parseInt(value));
+					else if (key.equals("flag.red.x"))
+						redx = Integer.parseInt(value);
+					else if (key.equals("flag.red.y"))
+						redy = Integer.parseInt(value);
+					else if (key.equals("flag.red.z"))
+						redz = Integer.parseInt(value);
+					else if (key.equals("flag.blue.x"))
+						bluex = Integer.parseInt(value);
+					else if (key.equals("flag.blue.y"))
+						bluey = Integer.parseInt(value);
+					else if (key.equals("flag.blue.z"))
+						bluez = Integer.parseInt(value);
+					else if (key.equals("blue.safezone.smallx"))
+						bzone.setSmallX(Integer.parseInt(value));
+					else if (key.equals("blue.safezone.bigx"))
+						bzone.setBigX(Integer.parseInt(value));
+					else if (key.equals("blue.safezone.smally"))
+						bzone.setSmallY(Integer.parseInt(value));
+					else if (key.equals("blue.safezone.bigy"))
+						bzone.setBigY(Integer.parseInt(value));
+					else if (key.equals("blue.safezone.smallz"))
+						bzone.setSmallZ(Integer.parseInt(value));
+					else if (key.equals("blue.safezone.bigz"))
+						bzone.setBigZ(Integer.parseInt(value));
+					else if (key.equals("red.safezone.smallx"))
+						rzone.setSmallX(Integer.parseInt(value));
+					else if (key.equals("red.safezone.bigx"))
+						rzone.setBigX(Integer.parseInt(value));
+					else if (key.equals("red.safezone.smally"))
+						rzone.setSmallY(Integer.parseInt(value));
+					else if (key.equals("red.safezone.bigy"))
+						rzone.setBigY(Integer.parseInt(value));
+					else if (key.equals("red.safezone.smallz"))
+						rzone.setSmallZ(Integer.parseInt(value));
+					else if (key.equals("red.safezone.bigz"))
+						rzone.setBigZ(Integer.parseInt(value));
 				}
 			}
 			in.close();

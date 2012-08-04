@@ -12,6 +12,7 @@ import java.util.Random;
 import com.gamezgalaxy.GGS.API.plugin.Game;
 import com.gamezgalaxy.GGS.chat.Messages;
 import com.gamezgalaxy.GGS.server.Server;
+import com.gamezgalaxy.ctf.events.EventListener;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.map.Map;
 
@@ -21,6 +22,7 @@ public class main extends Game {
 	Gamemode gm;
 	Thread run;
 	boolean running;
+	EventListener events;
 	ArrayList<String> maps = new ArrayList<String>();
 	public static main INSTANCE;
 	public static final Random random = new Random();
@@ -38,9 +40,15 @@ public class main extends Game {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		events = new EventListener();
+		getServer().getEventSystem().registerEvents(events);
 		run = new Game();
 		running = true;
 		run.start();
+	}
+	
+	public Gamemode getCurrentGame() {
+		return gm;
 	}
 	
 	public void loadMaps() throws IOException {
