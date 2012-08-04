@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2012 GamezGalaxy.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/gpl.html
+ ******************************************************************************/
 package com.gamezgalaxy.ctf.gamemode;
 
 import java.io.File;
@@ -40,8 +47,6 @@ public abstract class Gamemode {
 		//We swap the in-line if statement to get which one is loaded, not which one will be
 		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)
 			main.INSTANCE.getServer().getLevelHandler().unloadLevel(main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")));
-		//Now set the map level
-		this._map.level = main.INSTANCE.getServer().MainLevel;
 	}
 	public abstract void roundStart();
 	

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2012 GamezGalaxy.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/gpl.html
+ ******************************************************************************/
 package com.gamezgalaxy.ctf.main;
 
 import java.io.BufferedReader;
@@ -19,6 +26,7 @@ import com.gamezgalaxy.ctf.map.Map;
 public class main extends Game {
 
 	Messages globalchat;
+	int tick = 30000;
 	Gamemode gm;
 	Thread run;
 	boolean running;
@@ -85,6 +93,12 @@ public class main extends Game {
 	public void Tick() {
 		if (gm.isRunning())
 			gm.tick();
+		if (tick <= 0) {
+			GlobalMessage("Visit &2www.gamezgalaxy.com");
+			tick = 30000;
+		}
+		else
+			tick--;
 	}
 	
 	public static void GlobalMessage(String message) {
