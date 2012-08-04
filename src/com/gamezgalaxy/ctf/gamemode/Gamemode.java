@@ -1,6 +1,10 @@
 package com.gamezgalaxy.ctf.gamemode;
 
+import java.io.File;
+
+import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.Map;
+import com.gamezgalaxy.ctf.map.utl.ConfigGraber;
 
 public abstract class Gamemode {
 	Map _map;
@@ -9,9 +13,35 @@ public abstract class Gamemode {
 	
 	protected boolean running = false;
 	
-	public void setup(Map map) {
+	public boolean ctfmap = true;
+	
+	public void setup(Map map) throws Exception {
 		this._map = map;
-		//TODO Unload and load shit
+		//Unload levels if they exist
+		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)
+			main.INSTANCE.getServer().getLevelHandler().unloadLevel(main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")));
+		//Swap levels
+		final String BACKUP_PATH = "backups/" + (ctfmap ? "ctf" : "ctf2") + "/" + ConfigGraber.getMapBackupNumber(map.mapname, "config/") + "/" + (ctfmap ? "ctf" : "ctf2") + ".ggs";
+		final String FINAL_PATH = "levels/" + (ctfmap ? "ctf" : "ctf2") + ".ggs";
+		final String CONVERT_BACKUP_PATH = "backups/" + (ctfmap ? "ctf" : "ctf2") + "/" + ConfigGraber.getMapBackupNumber(map.mapname, "config/") + "/" + (ctfmap ? "ctf" : "ctf2") + ".lvl";
+		final String CONVERT_DAT_BACKUP_PATH = "backups/" + (ctfmap ? "ctf" : "ctf2") + "/" + ConfigGraber.getMapBackupNumber(map.mapname, "config/") + "/" + (ctfmap ? "ctf" : "ctf2") + ".lvl";
+		if (!new File(BACKUP_PATH).exists() && new File(CONVERT_BACKUP_PATH).exists()) {
+			//TODO Convert .lvl to .ggs
+		}
+		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_DAT_BACKUP_PATH).exists()) {
+			//TODO Convert .dat to .ggs
+		}
+		ConfigGraber.copyfile(BACKUP_PATH, FINAL_PATH);
+		//Set main level
+		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2")) == null)
+			throw new Exception("Error Restoring from backup.");
+		main.INSTANCE.getServer().MainLevel = main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2"));
+		//Unload the current game level if one is loaded..
+		//We swap the in-line if statement to get which one is loaded, not which one will be
+		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)
+			main.INSTANCE.getServer().getLevelHandler().unloadLevel(main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")));
+		//Now set the map level
+		this._map.level = main.INSTANCE.getServer().MainLevel;
 	}
 	public abstract void roundStart();
 	
@@ -27,7 +57,7 @@ public abstract class Gamemode {
 		return running;
 	}
 	
-	public void waitForEnd() throws InterruptedException {
+	public synchronized void waitForEnd() throws InterruptedException {
 		while (true) {
 			if (!isRunning())
 				return;

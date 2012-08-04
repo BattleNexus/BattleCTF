@@ -105,7 +105,12 @@ public class main extends Game {
 				m.mapname = map;
 				m.load();
 				gm = m.games.get(random.nextInt(m.games.size()));
-				gm.setup(m);
+				try {
+					gm.setup(m);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					continue;
+				}
 				gm.roundStart();
 				try {
 					gm.waitForEnd();
