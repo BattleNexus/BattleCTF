@@ -11,7 +11,9 @@ import com.gamezgalaxy.GGS.API.EventHandler;
 import com.gamezgalaxy.GGS.API.Listener;
 import com.gamezgalaxy.GGS.API.player.PlayerBlockChangeEvent;
 import com.gamezgalaxy.GGS.API.player.PlayerCommandEvent;
+import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.world.PlaceMode;
+import com.gamezgalaxy.ctf.blocks.TNT_Explode;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
 import com.gamezgalaxy.ctf.main.main;
@@ -57,6 +59,10 @@ public class EventListener implements Listener {
 					ctf.holders.remove(event.getPlayer());
 				}
 			}
+		}
+		else {
+			if (event.getBlock().getVisableBlock() == 46)
+				event.setBlock(new TNT_Explode(event.getPlayer()));
 		}
 	}
 	
