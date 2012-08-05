@@ -18,6 +18,7 @@ public class Team {
 	public String system_name;
 	public ArrayList<Player> members = new ArrayList<Player>();
 	public SafeZone safe = new SafeZone();
+	public SafeZone area = new SafeZone();
 	public int flagx;
 	public int flagy;
 	public int flagz;

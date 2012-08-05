@@ -19,23 +19,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import com.gamezgalaxy.ctf.main.main;
 public class ConfigGraber {
 
 	public static ArrayList<String> getMapList(String path) {
-		ArrayList<String> maps = new ArrayList<String>();
-		try {
-			FileInputStream fstream = new FileInputStream("config/maps.config");
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			while ((strLine = br.readLine()) != null) {
-				maps.add(strLine);
-			}
-			in.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return maps;
+		return main.INSTANCE.maps;
 	}
 	public static String getMapName(int number, String path) {
 		return getMapList(path).get(number - getMapmin(path));
@@ -48,15 +37,16 @@ public class ConfigGraber {
 	}
 	public static int getMapmin(String path) {
 		try {
-			Scanner scan = new Scanner(path);
+			Scanner scan = new Scanner(new File("config/maprange.config"));
 			return Integer.parseInt(scan.nextLine());
 		} catch(Exception e) {
+			e.printStackTrace();
 			return -1;
 		}
 	}
 	public static int getMapmax(String path) {
 		try {
-			Scanner scan = new Scanner(path);
+			Scanner scan = new Scanner(new File("config/maprange.config"));
 			scan.nextLine();
 			return Integer.parseInt(scan.nextLine());
 		} catch(Exception e) {
@@ -86,7 +76,6 @@ public class ConfigGraber {
 		}
 		catch(FileNotFoundException ex){
 			System.out.println(ex.getMessage() + " in the specified directory.");
-			System.exit(0);
 		}
 		catch(IOException e){
 			System.out.println(e.getMessage());  

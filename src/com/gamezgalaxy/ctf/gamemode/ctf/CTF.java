@@ -20,8 +20,8 @@ import com.gamezgalaxy.ctf.main.main;
 public class CTF extends Gamemode {
 
 	public static final String[] TEAM_NAMES = new String[] {
-		"Blue Team",
-		"Red Team",
+		"&1Blue Team",
+		"&4Red Team",
 		"Green Team",
 		"Purple Team",
 		"Yellow Team",
@@ -86,7 +86,7 @@ public class CTF extends Gamemode {
 	}
 	
 	public void resetFlag(Team t) {
-		getMap().level.setTile(t.flagblock, t.flagx, t.flagy, t.flagz, main.INSTANCE.getServer());
+		Player.GlobalBlockChange((short)t.flagx, (short)t.flagy, (short)t.flagz, t.flagblock, getMap().level, main.INSTANCE.getServer());
 	}
 
 	@Override

@@ -110,6 +110,31 @@ public class Map {
 								set.safe.setBigZ((Integer.parseInt(value)));
 						}
 					}
+					else if (key.split("\\.")[0].equalsIgnoreCase("area")) {
+						String team = key.split("\\.")[1];
+						Team set = null;
+						for (Team t : teams) {
+							if (t.system_name.equalsIgnoreCase(team)) {
+								set = t;
+								break;
+							}
+						}
+						if (set != null) {
+							String type = key.split("\\.")[2];
+							if (type.equals("smallx"))
+								set.area.setSmallX(Integer.parseInt(value));
+							else if (type.equals("bigx"))
+								set.area.setBigX((Integer.parseInt(value)));
+							else if (type.equals("smally"))
+								set.area.setSmallY((Integer.parseInt(value)));
+							else if (type.equals("bigy"))
+								set.area.setBigY((Integer.parseInt(value)));
+							else if (type.equals("smallz"))
+								set.area.setSmallZ((Integer.parseInt(value)));
+							else if (type.equals("bigz"))
+								set.area.setBigZ((Integer.parseInt(value)));
+						}
+					}
 					else if (key.split("\\.")[0].equalsIgnoreCase("block")) {
 						String team = key.split("\\.")[1];
 						Team set = null;

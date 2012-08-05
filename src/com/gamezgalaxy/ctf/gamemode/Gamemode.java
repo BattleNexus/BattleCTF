@@ -39,10 +39,12 @@ public abstract class Gamemode {
 			//TODO Convert .dat to .ggs
 		}
 		ConfigGraber.copyfile(BACKUP_PATH, FINAL_PATH);
+		main.INSTANCE.getServer().getLevelHandler().loadLevel(FINAL_PATH);
 		//Set main level
 		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2")) == null)
 			throw new Exception("Error Restoring from backup.");
 		main.INSTANCE.getServer().MainLevel = main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2"));
+		_map.level = main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2"));
 		//Unload the current game level if one is loaded..
 		//We swap the in-line if statement to get which one is loaded, not which one will be
 		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)

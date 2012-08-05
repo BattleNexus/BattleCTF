@@ -31,7 +31,7 @@ public class main extends Game {
 	Thread run;
 	boolean running;
 	EventListener events;
-	ArrayList<String> maps = new ArrayList<String>();
+	public ArrayList<String> maps = new ArrayList<String>();
 	public static main INSTANCE;
 	public static final Random random = new Random();
 	public main(Server server) {
@@ -91,6 +91,8 @@ public class main extends Game {
 
 	@Override
 	public void Tick() {
+		if (gm == null)
+			return;
 		if (gm.isRunning())
 			gm.tick();
 		if (tick <= 0) {
@@ -117,15 +119,21 @@ public class main extends Game {
 			while (running) {
 				String map = maps.get(random.nextInt(maps.size()));
 				m.mapname = map;
+				getServer().Log("Loading " + map + " config!");
 				m.load();
+				getServer().Log("Done!");
 				gm = m.games.get(random.nextInt(m.games.size()));
 				try {
+					getServer().Log("Setting up...");
 					gm.setup(m);
+					getServer().Log("Done!");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					continue;
 				}
+				getServer().Log("Starting round..");
 				gm.roundStart();
+				getServer().Log("Waiting for end..");
 				try {
 					gm.waitForEnd();
 				} catch (InterruptedException e) {
