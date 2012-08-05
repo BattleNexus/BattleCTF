@@ -87,36 +87,6 @@ public class TNT_Explode extends PhysicsBlock {
 					}
 				}
 			}
-			for (int xx = (X - (size + 2)); xx <= (X + (size + 2)); ++xx) {
-				for (int yy = (Y - (size + 2)); yy <= (Y + (size + 2)); ++yy) {
-					for (int zz = (Z - (size + 2)); zz <= (Z + (size + 2)); ++zz) {
-						Vector loc = new Vector(xx, yy, zz);
-						if (cache.containsKey(loc)) {
-							Player p = cache.get(loc);
-							if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
-								p.setPos((short)(getLevel().spawnx * 32), (short)(getLevel().spawny * 32), (short)(getLevel().spawnz * 32));
-							else {
-								CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
-								if (ctf.isOnNoTeam(p))
-									p.setPos((short)(getLevel().spawnx * 32), (short)(getLevel().spawny * 32), (short)(getLevel().spawnz * 32));
-								else {
-									Team t = ctf.getTeam(p);
-									int x = ((t.safe.getBigX() - t.safe.getSmallX()) / 2) + t.safe.getSmallX();
-									int y = ((t.safe.getBigY() - t.safe.getSmallY()) / 2) + t.safe.getSmallY();
-									int z = ((t.safe.getBigZ() - t.safe.getSmallZ()) / 2) + t.safe.getSmallZ();
-									p.setPos((short)(x * 32), (short)(y * 32), (short)(z * 32));
-								}
-							}
-							cache.remove(loc);
-						}
-						if (rand.nextInt(11) <= 8)
-							Player.GlobalBlockChange((short)xx, (short)yy, (short)zz, Block.getBlock("Air"), getLevel(), server);
-						else if (rand.nextInt(11) <= 4)
-							Player.GlobalBlockChange((short)xx, (short)yy, (short)zz, new Explosion((byte)10, "exe"), getLevel(), server);
-						
-					}
-				}
-			}
 		}
 		else
 			wait--;
@@ -142,5 +112,4 @@ public class TNT_Explode extends PhysicsBlock {
 			return false;
 		}
 	}
-
 }
