@@ -7,6 +7,7 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.gamemode.ctf;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -62,11 +63,8 @@ public class CTF extends Gamemode {
 		//Place the flags
 		for (Team t : teams) {
 			resetFlag(t);
-			int x = ((t.safe.getBigX() - t.safe.getSmallX()) / 2) + t.safe.getSmallX();
-			int y = ((t.safe.getBigY() - t.safe.getSmallY()) / 2) + t.safe.getSmallY();
-			int z = ((t.safe.getBigZ() - t.safe.getSmallZ()) / 2) + t.safe.getSmallZ();
 			for (Player p : t.members) {
-				p.setPos((short)(x * 32), (short)(y * 32), (short)(z * 32)); //Multiply by 32 to convert to player pos
+				t.spawnPlayer(p);
 			}
 		}
 		goal = main.random.nextInt(5);
@@ -82,6 +80,37 @@ public class CTF extends Gamemode {
 				roundEnd();
 				break;
 			}
+			for (Player p : t.members) {
+				if (t.safe.isSafe(p)) { //If he's inside his own field
+					int minx = p.getX() - 2;
+					int maxx = p.getX() + 2;
+					int miny = p.getY() - 2;
+					int maxy = p.getY() + 2;
+					int minz = p.getZ() - 2;
+					int maxz = p.getZ() + 2;
+					for (Player tagged : main.INSTANCE.getServer().players) {
+						if (t.members.contains(tagged))
+							continue;
+						if (getTeam(tagged) == null)
+							continue;
+						if (tagged.getX() > minx && tagged.getX() < maxx && tagged.getY() > miny && tagged.getY() < maxy && tagged.getZ() > minz && tagged.getZ() < maxz)
+							tag(p, tagged);
+					}
+				}
+			}
+		}
+	}
+	
+	public void tag(Player tagger, Player tagged) {
+		getTeam(tagged).spawnPlayer(tagged); //Spawn the person who got tagged
+		//Reward the tagger
+		int points = Integer.parseInt((String)tagger.getValue("points"));
+		points += 2;
+		tagger.setValue("points", points);
+		try {
+			tagger.saveValue("points");
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 	

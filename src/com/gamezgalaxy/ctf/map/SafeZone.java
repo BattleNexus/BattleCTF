@@ -7,6 +7,8 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.map;
 
+import com.gamezgalaxy.GGS.iomodel.Player;
+
 public class SafeZone {
 	private int smallx;
 	private int bigx;
@@ -51,6 +53,8 @@ public class SafeZone {
 	public int getBigZ() {
 		return bigz;
 	}
-	
+	public boolean isSafe(Player p) {
+		return p.getBlockX() > smallx && p.getBlockX() < bigx && p.getBlockY() > smally && p.getBlockY() < bigy && p.getBlockZ() > smallz && p.getBlockZ() < bigz;
+	}
 
 }

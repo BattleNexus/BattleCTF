@@ -84,10 +84,7 @@ public class EventListener implements Listener {
 					t.members.add(event.getPlayer());
 					main.GlobalMessage(event.getPlayer().username + " joined the " + t.name + "!");
 					//Spawn the player
-					int x = ((t.safe.getBigX() - t.safe.getSmallX()) / 2) + t.safe.getSmallX();
-					int y = ((t.safe.getBigY() - t.safe.getSmallY()) / 2) + t.safe.getSmallY();
-					int z = ((t.safe.getBigZ() - t.safe.getSmallZ()) / 2) + t.safe.getSmallZ();
-					event.getPlayer().setPos((short)(x * 32), (short)(y * 32), (short)(z * 32));
+					t.spawnPlayer(event.getPlayer());
 					event.Cancel(true);
 					break;
 				}
