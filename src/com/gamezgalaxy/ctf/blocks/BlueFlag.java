@@ -7,8 +7,14 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.blocks;
 
+import com.gamezgalaxy.GGS.world.Level;
 import com.gamezgalaxy.GGS.world.blocks.Blue;
+import com.gamezgalaxy.ctf.main.main;
 
 public class BlueFlag extends Blue {
+	
+	@Override
+	public void onDelete(Level l, int index) {
+	}
 
 }

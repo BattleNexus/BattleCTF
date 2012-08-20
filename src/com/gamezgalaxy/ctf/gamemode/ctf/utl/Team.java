@@ -24,11 +24,17 @@ public class Team {
 	public int flagz;
 	public Block flagblock;
 	public int points;
-	private final short SPAWNX = (short)((((safe.getBigX() - safe.getSmallX()) / 2) + safe.getSmallX()) * 32);
-	private final short SPAWNY = (short)((((safe.getBigY() - safe.getSmallY()) / 2) + safe.getSmallY()) * 32);
-	private final short SPAWNZ = (short)((((safe.getBigZ() - safe.getSmallZ()) / 2) + safe.getSmallZ()) * 32);
+	private short SPAWNX = -1;
+	private short SPAWNY = -1;
+	private short SPAWNZ = -1;
 	public Team() { }
 	public void spawnPlayer(Player p) {
+		if (SPAWNX == -1)
+			SPAWNX = (short)((((safe.getBigX() - safe.getSmallX()) / 2) + safe.getSmallX()) * 32);
+		if (SPAWNY == -1)
+			SPAWNY = (short)((((safe.getBigY() - safe.getSmallY()) / 2) + safe.getSmallY()) * 32);
+		if (SPAWNZ == -1)
+			SPAWNZ = (short)((((safe.getBigZ() - safe.getSmallZ()) / 2) + safe.getSmallZ()) * 32);
 		p.setPos(SPAWNX, SPAWNY, SPAWNZ);
 	}
 }

@@ -112,6 +112,8 @@ public class EventListener implements Listener {
 		int small = 0;
 		Team biggest = null;
 		for (int i = 0; i < ctf.teams.size(); i++) {
+			if (ctf.teams.get(i).members.size() == 0)
+				return ctf.teams.get(i);
 			if (biggest == null || ctf.teams.get(i).members.size() < small) {
 				biggest = ctf.teams.get(i);
 				small = ctf.teams.get(i).members.size();

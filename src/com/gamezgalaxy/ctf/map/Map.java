@@ -21,7 +21,10 @@ import com.gamezgalaxy.GGS.world.Block;
 import com.gamezgalaxy.GGS.world.Level;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
+import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
+import com.gamezgalaxy.ctf.main.main;
+import com.gamezgalaxy.ctf.map.utl.JarLoader;
 
 public class Map {
 	public Level level;
@@ -29,7 +32,8 @@ public class Map {
 	public int teamcount;
 	public ArrayList<Team> teams = new ArrayList<Team>();
 	public ArrayList<Gamemode> games = new ArrayList<Gamemode>();
-	
+	public ArrayList<Action> stalemate = new ArrayList<Action>();
+	public final JarLoader JARLOADER = new JarLoader();
 	public void load(String config) {
 		Team temp;
 		for (int i = 0; i < 8; i++) {
@@ -57,11 +61,19 @@ public class Map {
 					String key = strLine.split("\\=")[0].trim();
 					String value = strLine.split("\\=")[1].trim();
 					if (key.equals("core.gamemode")) {
-						Class<?> class_ = Class.forName(value);
-						Class<? extends Gamemode> runClass = class_.asSubclass(Gamemode.class);
-						Constructor<? extends Gamemode> constructor = runClass.getConstructor();
-						Gamemode game = constructor.newInstance();
-						games.add(game);
+						if (value.split("\\:").length == 2) {
+							String jarfile = value.split("\\:")[0];
+							String classpath = value.split("\\:")[1];
+							Gamemode game = JARLOADER.getType(jarfile, classpath, Gamemode.class);
+							games.add(game);
+						}
+						else {
+							Class<?> class_ = Class.forName(value);
+							Class<? extends Gamemode> runClass = class_.asSubclass(Gamemode.class);
+							Constructor<? extends Gamemode> constructor = runClass.getConstructor();
+							Gamemode game = constructor.newInstance();
+							games.add(game);
+						}
 					}
 					else if (key.equals("core.teamcount")) {
 						teamcount = Integer.parseInt(value);
@@ -145,10 +157,32 @@ public class Map {
 							}
 						}
 						if (set != null) {
+							if (value.split("\\:").length == 2) {
+								String jarfile = value.split("\\:")[0];
+								String classpath = value.split("\\:")[1];
+								Block block = JARLOADER.getType(jarfile, classpath, Block.class);
+								set.flagblock = block;
+							}
+							else {
+								Class<?> class_ = Class.forName(value);
+								Class<? extends Block> runClass = class_.asSubclass(Block.class);
+								Constructor<? extends Block> constructor = runClass.getConstructor();
+								set.flagblock = constructor.newInstance();
+							}
+						}
+					}
+					else if (key.split("\\.")[0].equalsIgnoreCase("stalemate.action")) {
+						if (value.split("\\:").length == 2) {
+							String jarfile = value.split("\\:")[0];
+							String classpath = value.split("\\:")[1];
+							Action action = JARLOADER.getType(jarfile, classpath, Action.class);
+							this.stalemate.add(action);
+						}
+						else {
 							Class<?> class_ = Class.forName(value);
-							Class<? extends Block> runClass = class_.asSubclass(Block.class);
-							Constructor<? extends Block> constructor = runClass.getConstructor();
-							set.flagblock = constructor.newInstance();
+							Class<? extends Action> runClass = class_.asSubclass(Action.class);
+							Constructor<? extends Action> constructor = runClass.getConstructor();
+							this.stalemate.add(constructor.newInstance());
 						}
 					}
 				}

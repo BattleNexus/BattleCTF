@@ -54,6 +54,12 @@ public class SafeZone {
 		return bigz;
 	}
 	public boolean isSafe(Player p) {
+		if (bigx == smallx)
+			bigx = p.getLevel().width;
+		if (bigy == smally)
+			bigy = p.getLevel().height;
+		if (bigz == smallz)
+			bigz = p.getLevel().depth;
 		return p.getBlockX() > smallx && p.getBlockX() < bigx && p.getBlockY() > smally && p.getBlockY() < bigy && p.getBlockZ() > smallz && p.getBlockZ() < bigz;
 	}
 

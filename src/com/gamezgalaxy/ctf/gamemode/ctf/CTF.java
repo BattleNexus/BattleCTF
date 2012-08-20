@@ -10,11 +10,14 @@ package com.gamezgalaxy.ctf.gamemode.ctf;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
+import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.ctf.blocks.BlueFlag;
 import com.gamezgalaxy.ctf.blocks.RedFlag;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
+import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
 import com.gamezgalaxy.ctf.main.main;
 
@@ -40,6 +43,7 @@ public class CTF extends Gamemode {
 		"gold",
 		"derpy"
 	};
+	public ArrayList<Action> stalemate = new ArrayList<Action>();
 	public ArrayList<Team> teams = new ArrayList<Team>();
 	public HashMap<Player, Team> holders = new HashMap<Player, Team>();
 	public int teamcount;
@@ -71,6 +75,8 @@ public class CTF extends Gamemode {
 		main.GlobalMessage("&2[GBot] In this round, your team must score &4" + goal + " &2points!");
 		main.GlobalMessage("&2[GBot] The round has started! Good luck!");
 		running = true;
+		Thread run = new Checker();
+		run.start();
 	}
 
 	@Override
@@ -80,31 +86,20 @@ public class CTF extends Gamemode {
 				roundEnd();
 				break;
 			}
-			for (Player p : t.members) {
-				if (t.safe.isSafe(p)) { //If he's inside his own field
-					int minx = p.getX() - 2;
-					int maxx = p.getX() + 2;
-					int miny = p.getY() - 2;
-					int maxy = p.getY() + 2;
-					int minz = p.getZ() - 2;
-					int maxz = p.getZ() + 2;
-					for (Player tagged : main.INSTANCE.getServer().players) {
-						if (t.members.contains(tagged))
-							continue;
-						if (getTeam(tagged) == null)
-							continue;
-						if (tagged.getX() > minx && tagged.getX() < maxx && tagged.getY() > miny && tagged.getY() < maxy && tagged.getZ() > minz && tagged.getZ() < maxz)
-							tag(p, tagged);
-					}
-				}
-			}
+		}
+		if (holders.size() % 2 == 0) {
+			main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.Dark_Red + "STALEMATE DETECTED!");
+			main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.Dark_Red + "Choosing a random action..");
+			
 		}
 	}
 	
 	public void tag(Player tagger, Player tagged) {
 		getTeam(tagged).spawnPlayer(tagged); //Spawn the person who got tagged
 		//Reward the tagger
-		int points = Integer.parseInt((String)tagger.getValue("points"));
+		int points = 0;
+		if (tagger.getValue("points") != null)
+			points = Integer.parseInt(tagger.getValue("points"));
 		points += 2;
 		tagger.setValue("points", points);
 		try {
@@ -112,6 +107,7 @@ public class CTF extends Gamemode {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		main.GlobalMessage(tagger.username + " &2TAGGED&f " + tagged.username);
 	}
 	
 	public void resetFlag(Team t) {
@@ -135,5 +131,38 @@ public class CTF extends Gamemode {
 	public boolean isOnNoTeam(Player p) {
 		return getTeam(p) == null;
 	}
-
+	
+	private class Checker extends Thread {
+		
+		@Override
+		public void run() {
+			while (running) {
+				for (Team t : teams) {
+					for (Player p : t.members) {
+						if (t.area.isSafe(p)) { //If he's inside his own field
+							int minx = p.getBlockX() - 1;
+							int maxx = p.getBlockX() + 1;
+							int miny = p.getBlockY() - 1;
+							int maxy = p.getBlockY() + 1;
+							int minz = p.getBlockZ() - 1;
+							int maxz = p.getBlockZ() + 1;
+							for (Player tagged : main.INSTANCE.getServer().players) {
+								if (t.members.contains(tagged))
+									continue;
+								if (getTeam(tagged) == null)
+									continue;
+								if (tagged.getBlockX() > minx && tagged.getBlockX() < maxx && tagged.getBlockY() > miny && tagged.getBlockY() < maxy && tagged.getBlockZ() > minz && tagged.getBlockZ() < maxz)
+									tag(p, tagged);
+							}
+						}
+					}
+				}
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }
