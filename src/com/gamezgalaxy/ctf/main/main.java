@@ -34,6 +34,7 @@ public class main extends Game {
 	public ArrayList<String> maps = new ArrayList<String>();
 	public static main INSTANCE;
 	public static final Random random = new Random();
+	boolean ctfmap = true;
 	public main(Server server) {
 		super(server);
 		globalchat = new Messages(server);
@@ -125,6 +126,7 @@ public class main extends Game {
 				gm = m.games.get(random.nextInt(m.games.size()));
 				try {
 					getServer().Log("Setting up...");
+					gm.ctfmap = ctfmap;
 					gm.setup(m);
 					getServer().Log("Done!");
 				} catch (Exception e1) {
@@ -139,6 +141,7 @@ public class main extends Game {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				ctfmap = !ctfmap;
 			}
 		}
 	}

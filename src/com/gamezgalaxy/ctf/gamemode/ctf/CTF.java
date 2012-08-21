@@ -18,6 +18,7 @@ import com.gamezgalaxy.ctf.blocks.BlueFlag;
 import com.gamezgalaxy.ctf.blocks.RedFlag;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
+import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.actions.DropFlags;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
 import com.gamezgalaxy.ctf.main.main;
 
@@ -71,7 +72,8 @@ public class CTF extends Gamemode {
 				t.spawnPlayer(p);
 			}
 		}
-		goal = main.random.nextInt(5);
+		goal = main.random.nextInt(5) + 1;
+		main.INSTANCE.getServer().Log("Round will require " + goal + " points");
 		main.GlobalMessage("&2[GBot] In this round, your team must score &4" + goal + " &2points!");
 		main.GlobalMessage("&2[GBot] The round has started! Good luck!");
 		running = true;
@@ -87,10 +89,22 @@ public class CTF extends Gamemode {
 				break;
 			}
 		}
+		if (holders == null || holders.size() == 0)
+			return;
 		if (holders.size() % 2 == 0) {
+			if (getMap().stalemate.size() == 0)
+				getMap().stalemate.add(new DropFlags());
 			main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.Dark_Red + "STALEMATE DETECTED!");
 			main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.Dark_Red + "Choosing a random action..");
-			
+			int index = new Random().nextInt(getMap().stalemate.size());
+			Action a = getMap().stalemate.get(index);
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			main.GlobalMessage(a.getMessage());
+			a.performaction(this);
 		}
 	}
 	
@@ -116,7 +130,11 @@ public class CTF extends Gamemode {
 
 	@Override
 	public void roundEnd() {
-		running = false;
+		main.INSTANCE.getServer().Log("Round end!");
+		for (Team t : teams) { 
+			t.points = 0;
+		}
+		super.dispose();
 	}
 	
 	public Team getTeam(Player p) {
@@ -140,12 +158,12 @@ public class CTF extends Gamemode {
 				for (Team t : teams) {
 					for (Player p : t.members) {
 						if (t.area.isSafe(p)) { //If he's inside his own field
-							int minx = p.getBlockX() - 1;
-							int maxx = p.getBlockX() + 1;
-							int miny = p.getBlockY() - 1;
-							int maxy = p.getBlockY() + 1;
-							int minz = p.getBlockZ() - 1;
-							int maxz = p.getBlockZ() + 1;
+							int minx = p.getBlockX() - 2;
+							int maxx = p.getBlockX() + 2;
+							int miny = p.getBlockY() - 2;
+							int maxy = p.getBlockY() + 2;
+							int minz = p.getBlockZ() - 2;
+							int maxz = p.getBlockZ() + 2;
 							for (Player tagged : main.INSTANCE.getServer().players) {
 								if (t.members.contains(tagged))
 									continue;

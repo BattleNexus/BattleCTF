@@ -24,9 +24,6 @@ public abstract class Gamemode {
 	
 	public void setup(Map map) throws Exception {
 		this._map = map;
-		//Unload levels if they exist
-		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)
-			main.INSTANCE.getServer().getLevelHandler().unloadLevel(main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")));
 		//Swap levels
 		final String BACKUP_PATH = "backups/" + (ctfmap ? "ctf" : "ctf2") + "/" + ConfigGraber.getMapBackupNumber(map.mapname, "config/") + "/" + (ctfmap ? "ctf" : "ctf2") + ".ggs";
 		final String FINAL_PATH = "levels/" + (ctfmap ? "ctf" : "ctf2") + ".ggs";
@@ -48,7 +45,7 @@ public abstract class Gamemode {
 		//Unload the current game level if one is loaded..
 		//We swap the in-line if statement to get which one is loaded, not which one will be
 		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)
-			main.INSTANCE.getServer().getLevelHandler().unloadLevel(main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")));
+			main.INSTANCE.getServer().getLevelHandler().unloadLevel(main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")), false);
 	}
 	public abstract void roundStart();
 	
@@ -58,6 +55,14 @@ public abstract class Gamemode {
 	
 	public Map getMap() {
 		return _map;
+	}
+	
+	public synchronized void dispose() {
+		running = false;
+		_map.games.clear();
+		_map.teams.clear();
+		_map.stalemate.clear();
+		super.notify();
 	}
 	
 	public boolean isRunning() {

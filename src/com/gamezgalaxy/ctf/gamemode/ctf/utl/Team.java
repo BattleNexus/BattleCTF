@@ -9,8 +9,11 @@ package com.gamezgalaxy.ctf.gamemode.ctf.utl;
 
 import java.util.ArrayList;
 
+import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.world.Block;
+import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
+import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.SafeZone;
 
 public class Team {
@@ -35,6 +38,14 @@ public class Team {
 			SPAWNY = (short)((((safe.getBigY() - safe.getSmallY()) / 2) + safe.getSmallY()) * 32);
 		if (SPAWNZ == -1)
 			SPAWNZ = (short)((((safe.getBigZ() - safe.getSmallZ()) / 2) + safe.getSmallZ()) * 32);
+		if (main.INSTANCE.getCurrentGame() instanceof CTF) {
+			CTF c = (CTF)main.INSTANCE.getCurrentGame();
+			if (c.holders.containsKey(p)) {
+				main.GlobalMessage(p.username + ChatColor.Dark_Red + " DROPPED THE FLAG!");
+				c.resetFlag(c.holders.get(p));
+				c.holders.remove(p);
+			}
+		}
 		p.setPos(SPAWNX, SPAWNY, SPAWNZ);
 	}
 }

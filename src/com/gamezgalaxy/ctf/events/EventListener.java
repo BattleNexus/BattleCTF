@@ -11,6 +11,7 @@ import com.gamezgalaxy.GGS.API.EventHandler;
 import com.gamezgalaxy.GGS.API.Listener;
 import com.gamezgalaxy.GGS.API.player.PlayerBlockChangeEvent;
 import com.gamezgalaxy.GGS.API.player.PlayerCommandEvent;
+import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.world.PlaceMode;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
@@ -57,6 +58,10 @@ public class EventListener implements Listener {
 					t.points++;
 					ctf.resetFlag(ctf.holders.get(event.getPlayer()));
 					ctf.holders.remove(event.getPlayer());
+					main.GlobalMessage(ChatColor.Orange + "Current Score:");
+					for (Team tt : ctf.teams) {
+						main.GlobalMessage(tt.name + ChatColor.White + ": " + tt.points);
+					}
 				}
 			}
 		}

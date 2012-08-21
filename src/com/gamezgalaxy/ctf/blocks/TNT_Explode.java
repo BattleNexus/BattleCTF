@@ -38,7 +38,7 @@ public class TNT_Explode extends PhysicsBlock {
 	public PhysicsBlock clone(Server s) {
 		TNT_Explode te = new TNT_Explode(ID, name, s, owner);
 		te.wait = new Random().nextInt(40 - 15) + 15;
-		te.size = new Random().nextInt(3);
+		te.size = new Random().nextInt(3) + 1;
 		return te;
 	}
 
@@ -77,7 +77,7 @@ public class TNT_Explode extends PhysicsBlock {
 							TNT_Explode tnt = (TNT_Explode)getLevel().getTile(xx, yy, zz);
 							tnt.wait = 0;
 						}
-						else if (isTeamFlag(getLevel().getTile(xx, yy, zz), (main.INSTANCE.getCurrentGame() instanceof CTF ? (CTF)main.INSTANCE.getCurrentGame() : null)))
+						else if (isInSafe(xx, yy, zz, (main.INSTANCE.getCurrentGame() instanceof CTF ? (CTF)main.INSTANCE.getCurrentGame() : null)) || isTeamFlag(getLevel().getTile(xx, yy, zz), (main.INSTANCE.getCurrentGame() instanceof CTF ? (CTF)main.INSTANCE.getCurrentGame() : null)))
 							continue;
 						else if (rand.nextInt(11) <= 8)
 							Player.GlobalBlockChange((short)xx, (short)yy, (short)zz, Block.getBlock("Air"), getLevel(), server);
@@ -92,7 +92,15 @@ public class TNT_Explode extends PhysicsBlock {
 		else
 			wait--;
 	}
-	
+	public boolean isInSafe(int x, int y, int z, CTF ctf) {
+		if (ctf == null || (x == getX() && y == getY() && z == getZ()))
+			return false;
+		for (Team t : ctf.teams) {
+			if (t.safe.isSafe(x, y, z))
+				return true;
+		}
+		return false;
+	}
 	public boolean isTeamFlag(Block flag, CTF ctf) {
 		if (ctf == null)
 			return false;
