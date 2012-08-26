@@ -9,6 +9,7 @@ package com.gamezgalaxy.ctf.gamemode;
 
 import java.io.File;
 
+import com.gamezgalaxy.GGS.world.Level;
 import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.Map;
 import com.gamezgalaxy.ctf.map.utl.ConfigGraber;
@@ -28,12 +29,17 @@ public abstract class Gamemode {
 		final String BACKUP_PATH = "backups/" + (ctfmap ? "ctf" : "ctf2") + "/" + ConfigGraber.getMapBackupNumber(map.mapname, "config/") + "/" + (ctfmap ? "ctf" : "ctf2") + ".ggs";
 		final String FINAL_PATH = "levels/" + (ctfmap ? "ctf" : "ctf2") + ".ggs";
 		final String CONVERT_BACKUP_PATH = "backups/" + (ctfmap ? "ctf" : "ctf2") + "/" + ConfigGraber.getMapBackupNumber(map.mapname, "config/") + "/" + (ctfmap ? "ctf" : "ctf2") + ".lvl";
-		final String CONVERT_DAT_BACKUP_PATH = "backups/" + (ctfmap ? "ctf" : "ctf2") + "/" + ConfigGraber.getMapBackupNumber(map.mapname, "config/") + "/" + (ctfmap ? "ctf" : "ctf2") + ".lvl";
+		final String CONVERT_DAT_BACKUP_PATH = "backups/" + (ctfmap ? "ctf" : "ctf2") + "/" + ConfigGraber.getMapBackupNumber(map.mapname, "config/") + "/" + (ctfmap ? "ctf" : "ctf2") + ".dat";
 		if (!new File(BACKUP_PATH).exists() && new File(CONVERT_BACKUP_PATH).exists()) {
 			//TODO Convert .lvl to .ggs
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_DAT_BACKUP_PATH).exists()) {
-			//TODO Convert .dat to .ggs
+			main.INSTANCE.getServer().Log("Converting .dat..");
+			Level l = Level.Convert(CONVERT_DAT_BACKUP_PATH);
+			new File(CONVERT_DAT_BACKUP_PATH).delete();
+			l.Save();
+			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
+			main.INSTANCE.getServer().Log("Done!");
 		}
 		ConfigGraber.copyfile(BACKUP_PATH, FINAL_PATH);
 		main.INSTANCE.getServer().getLevelHandler().loadLevel(FINAL_PATH);

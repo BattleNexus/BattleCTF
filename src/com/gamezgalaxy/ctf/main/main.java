@@ -61,6 +61,7 @@ public class main extends Game {
 		_shop.Load();
 		getServer().getCommandHandler().addCommand(new CmdPoints());
 		getServer().getCommandHandler().addCommand(new CmdShop());
+		getServer().getCommandHandler().addCommand(new CmdFlagReset());
 	}
 	
 	public Gamemode getCurrentGame() {
@@ -91,14 +92,6 @@ public class main extends Game {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void Start() {
-	}
-
-	@Override
-	public void Stop() {
 	}
 
 	@Override
