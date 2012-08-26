@@ -44,6 +44,7 @@ public class Team {
 				main.GlobalMessage(p.username + ChatColor.Dark_Red + " DROPPED THE FLAG!");
 				c.resetFlag(c.holders.get(p));
 				c.holders.remove(p);
+				c.addDrop(p);
 			}
 		}
 		p.setPos(SPAWNX, SPAWNY, SPAWNZ);

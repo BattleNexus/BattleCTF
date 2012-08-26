@@ -10,7 +10,6 @@ package com.gamezgalaxy.ctf.main;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -18,7 +17,10 @@ import java.util.Random;
 
 import com.gamezgalaxy.GGS.API.plugin.Game;
 import com.gamezgalaxy.GGS.chat.Messages;
+import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.server.Server;
+import com.gamezgalaxy.ctf.commands.*;
+import com.gamezgalaxy.ctf.commands.shop.Shop;
 import com.gamezgalaxy.ctf.events.EventListener;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.map.Map;
@@ -34,6 +36,7 @@ public class main extends Game {
 	public ArrayList<String> maps = new ArrayList<String>();
 	public static main INSTANCE;
 	public static final Random random = new Random();
+	private Shop _shop;
 	boolean ctfmap = true;
 	public main(Server server) {
 		super(server);
@@ -54,10 +57,18 @@ public class main extends Game {
 		run = new Game();
 		running = true;
 		run.start();
+		_shop = new Shop();
+		_shop.Load();
+		getServer().getCommandHandler().addCommand(new CmdPoints());
+		getServer().getCommandHandler().addCommand(new CmdShop());
 	}
 	
 	public Gamemode getCurrentGame() {
 		return gm;
+	}
+	
+	public Shop getShop() {
+		return _shop;
 	}
 	
 	public void loadMaps() throws IOException {
@@ -106,6 +117,10 @@ public class main extends Game {
 	
 	public static void GlobalMessage(String message) {
 		INSTANCE.globalchat.serverBroadcast(message);
+	}
+	public static void GlobalClear() {
+		for (Player p : INSTANCE.getServer().players)
+			p.clearChatScreen();
 	}
 	public static String secondsToTime(int sec) {
 		int min = 0;

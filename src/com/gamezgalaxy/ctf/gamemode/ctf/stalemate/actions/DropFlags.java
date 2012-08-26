@@ -17,8 +17,8 @@ public class DropFlags extends Action {
 		for (int i = 0; i < c.holders.size(); i++) {
 			Team b = c.holders.get(c.holders.keySet().toArray()[i]);
 			c.resetFlag(b);
-			c.holders.remove(c.holders.keySet().toArray()[i]);
 		}
+		c.holders.clear();
 	}
 
 }

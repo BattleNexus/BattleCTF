@@ -9,8 +9,10 @@ package com.gamezgalaxy.ctf.events;
 
 import com.gamezgalaxy.GGS.API.EventHandler;
 import com.gamezgalaxy.GGS.API.Listener;
+import com.gamezgalaxy.GGS.API.level.PlayerJoinedLevel;
 import com.gamezgalaxy.GGS.API.player.PlayerBlockChangeEvent;
 import com.gamezgalaxy.GGS.API.player.PlayerCommandEvent;
+import com.gamezgalaxy.GGS.API.player.PlayerDisconnectEvent;
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.world.PlaceMode;
@@ -56,6 +58,7 @@ public class EventListener implements Listener {
 					main.GlobalMessage(event.getPlayer().username + " returned the flag!");
 					event.Cancel(true);
 					t.points++;
+					ctf.addCapture(event.getPlayer());
 					ctf.resetFlag(ctf.holders.get(event.getPlayer()));
 					ctf.holders.remove(event.getPlayer());
 					main.GlobalMessage(ChatColor.Orange + "Current Score:");
@@ -66,9 +69,29 @@ public class EventListener implements Listener {
 			}
 		}
 		else {
-			if (event.getBlock().getVisableBlock() == 46)
-				event.setBlock(new TNT_Explode(event.getPlayer()));
+			if (event.getBlock().getVisableBlock() == 46 && !ctf.tntholders.containsKey(event.getPlayer())) {
+				TNT_Explode t = new TNT_Explode(event.getPlayer());
+				event.setBlock(t);
+				ctf.tntholders.put(event.getPlayer(), t);
+				event.getPlayer().sendMessage(ChatColor.Aqua + " Place " + ChatColor.Red + "\"Brick\" " + ChatColor.Aqua + " to detonate the TNT");
+			}
+			else if (event.getBlock().getVisableBlock() == 46 && ctf.tntholders.containsKey(event.getPlayer()))
+				event.Cancel(true);
+			else if (event.getBlock().getVisableBlock() == 45 && ctf.tntholders.containsKey(event.getPlayer())) {
+				ctf.tntholders.get(event.getPlayer()).wait = 0;
+				event.Cancel(true);
+			}
 		}
+	}
+	
+	@EventHandler
+	public void joinLevel(PlayerJoinedLevel event) {
+		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
+			return;
+		final CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
+		final Player p = event.getPlayer();
+		if (ctf.getTeam(p) != null)
+			ctf.getTeam(p).spawnPlayer(p);
 	}
 	
 	@EventHandler
@@ -96,6 +119,19 @@ public class EventListener implements Listener {
 			}
 		}
 	}
+	
+	@EventHandler
+	public void onDisconnect(PlayerDisconnectEvent event) {
+		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
+			return;
+		final CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
+		if (ctf.getTeam(event.getPlayer()) != null) {
+			final Team t = ctf.getTeam(event.getPlayer());
+			t.members.remove(event.getPlayer());
+			main.GlobalMessage(ChatColor.Dark_Red + event.getPlayer().username + " has left the " + t.name);
+		}
+	}
+	
 	public Team getBiggest() {
 		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
 			return null;

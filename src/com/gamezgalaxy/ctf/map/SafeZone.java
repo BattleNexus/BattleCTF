@@ -54,7 +54,7 @@ public class SafeZone {
 		return bigz;
 	}
 	public boolean isSafe(int x, int y, int z) {
-		return x > smallx && x < bigx && y > smally && y < bigy && z > smallz && z < bigz;
+		return x > smallx - 2 && x < bigx + 2 && y > smally - 2 && y < bigy + 2 && z > smallz - 2 && z < bigz + 2;
 	}
 	public boolean isSafe(Player p) {
 		if (bigx == smallx)
