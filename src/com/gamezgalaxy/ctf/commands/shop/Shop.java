@@ -130,5 +130,11 @@ public class Shop {
 			        "<level>1</level>\n" +
 			        "<class>com.gamezgalaxy.ctf.commands.shop.Cloak</class>\n" +
 			  "</Item>\n" +
+			  "<Item>\n" +
+			        "<name>Jetpack</name>\n" +
+			        "<price>500</price>\n" +
+			        "<level>5</level>\n" +
+			        "<class>com.gamezgalaxy.ctf.commands.shop.JetPack</class>\n" +
+			  "</Item>\n" +
 			"</Shop>";
 }

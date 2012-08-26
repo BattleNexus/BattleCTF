@@ -71,13 +71,14 @@ public class CmdShop extends Command {
 			for (ShopItem s : main.INSTANCE.getShop().items) {
 				if (s.getLevel() >= level) {
 					i++;
-					player.sendMessage(ChatColor.Yellow + "" + i + ". " + ChatColor.White + s.getName() + "(" + s.getPrice() + " GP's)");
+					player.sendMessage(ChatColor.Yellow + "" + i + ". " + ChatColor.White + s.getName() + " (" + s.getPrice() + " GP's)");
 				}
 				if (i >= 10)
 					break;
 			}
 			player.sendMessage(ChatColor.Yellow + "Page 1/" + getPages(player, ctf));
 			player.sendMessage("To choose a item, type " + ChatColor.Aqua + "/shop <item name>");
+			player.sendMessage("or, " + ChatColor.Aqua + "/<item name>");
 			return;
 		}
 		else {
@@ -95,11 +96,12 @@ public class CmdShop extends Command {
 						i++;
 						if (i < start)
 							continue;
-						player.sendMessage(ChatColor.Yellow + "" + i + ". " + ChatColor.White + s.getName() + "(" + s.getPrice() + " GP's)");
+						player.sendMessage(ChatColor.Yellow + "" + i + ". " + ChatColor.White + s.getName() + " (" + s.getPrice() + " GP's)");
 					}
 				}
 				player.sendMessage(ChatColor.Yellow + "Page " + page + "/" + getPages(player, ctf));
 				player.sendMessage("To choose a item, type " + ChatColor.Aqua + "/shop <item name>");
+				player.sendMessage("or, " + ChatColor.Aqua + "/<item name>");
 				return;
 			} catch (Exception e) {
 				ShopItem item = findItem(args[0], ctf.getLevel(player));

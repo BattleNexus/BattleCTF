@@ -17,6 +17,7 @@ import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.world.PlaceMode;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
+import com.gamezgalaxy.ctf.commands.shop.ShopItem;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
 import com.gamezgalaxy.ctf.main.main;
@@ -78,7 +79,7 @@ public class EventListener implements Listener {
 			else if (event.getBlock().getVisableBlock() == 46 && ctf.tntholders.containsKey(event.getPlayer()))
 				event.Cancel(true);
 			else if (event.getBlock().getVisableBlock() == 45 && ctf.tntholders.containsKey(event.getPlayer())) {
-				ctf.tntholders.get(event.getPlayer()).wait = 0;
+				ctf.tntholders.get(event.getPlayer()).explode();
 				event.Cancel(true);
 			}
 		}
@@ -116,6 +117,22 @@ public class EventListener implements Listener {
 					event.Cancel(true);
 					break;
 				}
+			}
+		}
+		else {
+			for (ShopItem item : main.INSTANCE.getShop().items) {
+				if (ctf.getLevel(event.getPlayer()) >= item.getLevel()) {
+					if (item.getName().equalsIgnoreCase(event.getCommand())) {
+						String[] args = new String[event.getArgs().size()];
+						item.execute(event.getPlayer(), event.getArgs().toArray(args));
+						event.Cancel(true);
+					}
+				}
+			}
+			if (event.getCommand().equalsIgnoreCase("spawn")) {
+				Team t = ctf.getTeam(event.getPlayer());
+				t.spawnPlayer(event.getPlayer());
+				event.Cancel(true);
 			}
 		}
 	}

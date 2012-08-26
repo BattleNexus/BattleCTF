@@ -18,6 +18,7 @@ import com.gamezgalaxy.GGS.world.Block;
 import com.gamezgalaxy.ctf.blocks.BlueFlag;
 import com.gamezgalaxy.ctf.blocks.RedFlag;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
+import com.gamezgalaxy.ctf.commands.shop.ShopItem;
 import com.gamezgalaxy.ctf.events.PlayerTaggedEvent;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
@@ -297,6 +298,12 @@ public class CTF extends Gamemode {
 								resetEXP(p);
 								levelUp(p);
 								p.sendMessage(ChatColor.Bright_Green + "Level Up!");
+								for (ShopItem item : main.INSTANCE.getShop().items) {
+									String message = item.getLevelUpMessage(p);
+									if (message == null || message.equals(""))
+										continue;
+									p.sendMessage(message);
+								}
 							}
 							if (t.area.isSafe(p)) { //If he's inside his own field
 								int minx = p.getBlockX() - 2;
