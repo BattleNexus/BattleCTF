@@ -109,7 +109,9 @@ public class CmdShop extends Command {
 					player.sendMessage(ChatColor.Dark_Red + "That item does not exist!");
 					return;
 				}
-				item.execute(player, args);
+				String[] tempargs = new String[args.length - 1];
+				System.arraycopy(args, 1, tempargs, 0, args.length - 1);
+				item.execute(player, tempargs);
 			}
 		}
 	}

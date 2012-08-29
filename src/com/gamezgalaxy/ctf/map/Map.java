@@ -23,7 +23,6 @@ import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
-import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.utl.JarLoader;
 
 public class Map {
@@ -34,7 +33,7 @@ public class Map {
 	public ArrayList<Gamemode> games = new ArrayList<Gamemode>();
 	public ArrayList<Action> stalemate = new ArrayList<Action>();
 	public final JarLoader JARLOADER = new JarLoader();
-	public void load(String config) {
+	public void load(String config) throws InvalidConfigException {
 		Team temp;
 		for (int i = 0; i < 8; i++) {
 			temp = new Team();
@@ -53,10 +52,8 @@ public class Map {
 					continue;
 				if (strLine.equals("CONFIG.2.2"))
 					validconfig = true;
-				else if (strLine.equals("CONFIG.2.0")) {
-					//TODO Read and Convert
-					break;
-				}
+				else if (strLine.equals("CONFIG.2.0"))
+					throw new InvalidConfigException("The config \"" + config + "\" is invalid. It's config file is v2.0 and cant be converted!");
 				else if (validconfig) {
 					String key = strLine.split("\\=")[0].trim();
 					String value = strLine.split("\\=")[1].trim();
@@ -189,37 +186,32 @@ public class Map {
 			}
 			in.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public void load() {
-		load("config/" + mapname + ".config");
+		try {
+			load("config/" + mapname + ".config");
+		} catch (InvalidConfigException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -99,7 +99,7 @@ public class Cloak extends ShopItem implements Listener {
 			return "";
 		CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
 		if (ctf.getLevel(p) % 3 == 0)
-			return ChatColor.Bright_Green + "+ " + ChatColor.White + "Your cloak has been upgraded! It will now last for " + (ctf.getLevel(p) * 2 + 15) + " seconds!";
+			return ChatColor.White + "Your cloak has been upgraded! It will now last for " + (ctf.getLevel(p) * 2 + 15) + " seconds!";
 		return "";
 	}
 

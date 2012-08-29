@@ -6,6 +6,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 public class JarLoader {
+	@SuppressWarnings("deprecation")
 	public <T> T getType(String file, String classpath, Class<? extends T> type, Object...parma) {
 		try {
 			File f = new File(file);

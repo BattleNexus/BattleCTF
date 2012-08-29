@@ -114,6 +114,7 @@ public class EventListener implements Listener {
 					main.GlobalMessage(event.getPlayer().username + " joined the " + t.name + "!");
 					//Spawn the player
 					t.spawnPlayer(event.getPlayer());
+					t.setColor(event.getPlayer());
 					event.Cancel(true);
 					break;
 				}

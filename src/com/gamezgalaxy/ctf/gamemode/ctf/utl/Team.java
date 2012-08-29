@@ -10,6 +10,7 @@ package com.gamezgalaxy.ctf.gamemode.ctf.utl;
 import java.util.ArrayList;
 
 import com.gamezgalaxy.GGS.chat.ChatColor;
+import com.gamezgalaxy.GGS.chat.ColorFormatException;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.world.Block;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
@@ -48,5 +49,13 @@ public class Team {
 			}
 		}
 		p.setPos(SPAWNX, SPAWNY, SPAWNZ);
+	}
+	public void setColor(Player p) {
+		try {
+			ChatColor c = ChatColor.parse(name);
+			p.setDisplayColor(c);
+		} catch (ColorFormatException e) {
+			e.printStackTrace();
+		}
 	}
 }

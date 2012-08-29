@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.world.Block;
-import com.gamezgalaxy.ctf.blocks.TNT_Explode;
-import com.gamezgalaxy.ctf.blocks.TNT_Explode.Vector;
-import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
-import com.gamezgalaxy.ctf.main.main;
 
 public class JetPack extends ShopItem {
 
@@ -36,12 +32,6 @@ public class JetPack extends ShopItem {
 
 	@Override
 	public String getLevelUpMessage(Player p) {
-		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
-			return "";
-		CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
-		final int level = ctf.getLevel(p);
-		if (level == 5)
-			return ChatColor.Bright_Green + "+ " + ChatColor.White + "You unlocked jetpack in the shop!";
 		return "";
 	}
 	public class Vector {

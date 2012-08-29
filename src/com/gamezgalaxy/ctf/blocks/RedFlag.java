@@ -9,10 +9,14 @@ package com.gamezgalaxy.ctf.blocks;
 
 import com.gamezgalaxy.GGS.world.Level;
 import com.gamezgalaxy.GGS.world.blocks.Red;
-import com.gamezgalaxy.ctf.main.main;
 
 public class RedFlag extends Red {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8294879984469991829L;
+
 	@Override
 	public void onDelete(Level l, int index) {
 	}

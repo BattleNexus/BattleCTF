@@ -1,20 +1,8 @@
 package com.gamezgalaxy.ctf.commands.shop;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,10 +11,8 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import com.gamezgalaxy.GGS.util.FileUtils;
-import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
 import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.utl.JarLoader;
-import com.sun.xml.internal.txw2.Document;
 
 public class Shop {
 
@@ -136,5 +122,11 @@ public class Shop {
 			        "<level>5</level>\n" +
 			        "<class>com.gamezgalaxy.ctf.commands.shop.JetPack</class>\n" +
 			  "</Item>\n" +
+			  "<Item>\n" +
+			        "<name>Disguise</name>\n" +
+			        "<price>800</price>\n" +
+			        "<level>7</level>\n" +
+			        "<class>com.gamezgalaxy.ctf.commands.shop.Disguise</class>\n" +
+			  "</Item>/n" +
 			"</Shop>";
 }

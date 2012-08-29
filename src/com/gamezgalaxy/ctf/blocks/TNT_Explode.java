@@ -8,14 +8,19 @@ import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.server.Server;
 import com.gamezgalaxy.GGS.world.Block;
 import com.gamezgalaxy.GGS.world.PhysicsBlock;
-import com.gamezgalaxy.ctf.gamemode.Gamemode;
+import com.gamezgalaxy.ctf.events.Killable;
+import com.gamezgalaxy.ctf.events.PlayerDeathByTNTEvent;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.KillStreak;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
 import com.gamezgalaxy.ctf.main.main;
 
-public class TNT_Explode extends PhysicsBlock {
+public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9132287119137033841L;
 	Player owner;
 	Server server;
 	public int wait = 400;
@@ -75,31 +80,35 @@ public class TNT_Explode extends PhysicsBlock {
 								p.setPos((short)(getLevel().spawnx * 32), (short)(getLevel().spawny * 32), (short)(getLevel().spawnz * 32));
 							else {
 								Team t = ctf.getTeam(p);
-								t.spawnPlayer(p);
-								if (ctf.getKillStreak(p) != 0) {
-									main.GlobalMessage(ChatColor.Dark_Red + this.owner.username + " ended " + p.username + " killstreak of " + ctf.getKillStreak(p));
-									ctf.setKillStreak(p, 0);
-									if (ctf.dominate.containsKey(p)) {
-										if (ctf.dominate.get(p).containsKey(owner)) {
-											ctf.dominate.get(p).remove(owner);
-											main.GlobalMessage(owner.username + " got " + ChatColor.Dark_Red + " REVENGE " + ChatColor.White + " on " + p.username);
+								PlayerDeathByTNTEvent event = new PlayerDeathByTNTEvent(p, owner, this);
+								owner.getServer().getEventSystem().callEvent(event);
+								if (!event.isCancelled()) {
+									t.spawnPlayer(p);
+									if (ctf.getKillStreak(p) != 0) {
+										main.GlobalMessage(ChatColor.Dark_Red + this.owner.username + " ended " + p.username + " killstreak of " + ctf.getKillStreak(p));
+										ctf.setKillStreak(p, 0);
+										if (ctf.dominate.containsKey(p)) {
+											if (ctf.dominate.get(p).containsKey(owner)) {
+												ctf.dominate.get(p).remove(owner);
+												main.GlobalMessage(owner.username + " got " + ChatColor.Dark_Red + " REVENGE " + ChatColor.White + " on " + p.username);
+											}
 										}
 									}
+									main.GlobalMessage(this.owner.username + " &4EXPLODED&f " + p.username);
+									kills++;
+									if (!ctf.dominate.containsKey(owner))
+										ctf.dominate.put(owner, new HashMap<Player, Integer>());
+									if (ctf.dominate.get(owner).containsKey(p)) {
+										int temp = ctf.dominate.get(owner).get(p);
+										temp++;
+										ctf.dominate.get(owner).remove(p);
+										ctf.dominate.get(owner).put(p, temp);
+										if (temp % 4 == 0)
+											main.GlobalMessage(owner.username + " is " + ChatColor.Dark_Red + " DOMINATING " + ChatColor.White + p.username);
+									}
+									else
+										ctf.dominate.get(owner).put(p, 1);
 								}
-								main.GlobalMessage(this.owner.username + " &4EXPLODED&f " + p.username);
-								kills++;
-								if (!ctf.dominate.containsKey(owner))
-									ctf.dominate.put(owner, new HashMap<Player, Integer>());
-								if (ctf.dominate.get(owner).containsKey(p)) {
-									int temp = ctf.dominate.get(owner).get(p);
-									temp++;
-									ctf.dominate.get(owner).remove(p);
-									ctf.dominate.get(owner).put(p, temp);
-									if (temp % 4 == 0)
-										main.GlobalMessage(owner.username + " is " + ChatColor.Dark_Red + " DOMINATING " + ChatColor.White + p.username);
-								}
-								else
-									ctf.dominate.get(owner).put(p, 1);
 							}
 						}
 						cache.remove(loc);
@@ -179,5 +188,10 @@ public class TNT_Explode extends PhysicsBlock {
 		public int hashCode() {
 			return X + Y + Z;
 		}
+	}
+
+	@Override
+	public TNT_Explode getObject() {
+		return this;
 	}
 }

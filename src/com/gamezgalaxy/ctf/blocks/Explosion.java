@@ -9,6 +9,7 @@ import com.gamezgalaxy.GGS.world.PhysicsBlock;
 
 public class Explosion extends PhysicsBlock {
 
+	private static final long serialVersionUID = 1L;
 	final Random rand = new Random();
 	Server server;
 	int wait = 10;

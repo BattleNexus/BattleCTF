@@ -14,9 +14,6 @@ import java.util.Random;
 
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
-import com.gamezgalaxy.GGS.world.Block;
-import com.gamezgalaxy.ctf.blocks.BlueFlag;
-import com.gamezgalaxy.ctf.blocks.RedFlag;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
 import com.gamezgalaxy.ctf.commands.shop.ShopItem;
 import com.gamezgalaxy.ctf.events.PlayerTaggedEvent;
@@ -77,6 +74,7 @@ public class CTF extends Gamemode {
 			resetFlag(t);
 			for (Player p : t.members) {
 				t.spawnPlayer(p);
+				t.setColor(p);
 			}
 		}
 		goal = main.random.nextInt(5) + 1;
@@ -298,11 +296,16 @@ public class CTF extends Gamemode {
 								resetEXP(p);
 								levelUp(p);
 								p.sendMessage(ChatColor.Bright_Green + "Level Up!");
+								int level = getLevel(p);
+								String message;
 								for (ShopItem item : main.INSTANCE.getShop().items) {
-									String message = item.getLevelUpMessage(p);
+									if (item.getLevel() > level)
+										message = item.getLevelUpMessage(p);
+									else
+										message = item.checkUnlock(level);
 									if (message == null || message.equals(""))
 										continue;
-									p.sendMessage(message);
+									p.sendMessage(ChatColor.Bright_Green + "+ " + message);
 								}
 							}
 							if (t.area.isSafe(p)) { //If he's inside his own field

@@ -24,6 +24,20 @@ public abstract class ShopItem extends Command {
 	
 	public abstract String getLevelUpMessage(Player p);
 	
+	public String checkUnlock(int level) {
+		if (level == getLevel())
+			return ChatColor.White + "You unlocked " + ChatColor.Bright_Green + getName();
+		return "";
+	}
+	
+	/**
+	 * Override this method if you want command-line
+	 * arguments in your shop item
+	 */
+	public boolean run(Player p, String[] args) {
+		return run(p);
+	}
+	
 	public int getPrice() {
 		return (_price > 0 ? _price : getDefaultPrice());
 	}
@@ -72,7 +86,7 @@ public abstract class ShopItem extends Command {
 			p.sendMessage(ChatColor.Dark_Red + "You dont have enough points to buy this item!");
 			return;
 		}
-		if (run(p)) {
+		if (run(p, args)) {
 			ctf.setValue(p, "points", points - getPrice(), false);
 			p.sendMessage(ChatColor.White + "" + getPrice() + ChatColor.Bright_Green +  "GP's " + ChatColor.White + "have been taken from your account!");
 			p.sendMessage("Thank you for using the shop!");
