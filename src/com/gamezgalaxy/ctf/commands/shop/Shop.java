@@ -70,7 +70,7 @@ public class Shop {
 			item.setLevel(level);
 			item.setPrice(price);
 			item.setName(name);
-			main.INSTANCE.getServer().Log("Shop Item " + name + " @" + (jar.equals("null") || jar.equals("") ? "CTF.jar" : jar) + "@" + classpath + " was loaded!");
+			main.INSTANCE.getServer().Log("Shop Item " + name + " " + (jar.equals("null") || jar.equals("") ? "CTF.jar" : jar) + "@" + classpath + " was loaded!");
 			return item;
 		} catch (Exception ee) {
 			ee.printStackTrace();

@@ -61,7 +61,8 @@ public class CmdPoints extends Command {
 		player.sendMessage("Flag Captures: " + caps);
 		player.sendMessage("Flag Drops: " + drops);
 		player.sendMessage("Flag Ratio: " + rate);
-		player.sendMessage("Team: " + team.name);
+		if (team != null)
+			player.sendMessage("Team: " + team.name);
 		player.sendMessage("&eLevel :: &a" + level + "    &eEXP :: &a" + exp + "/" + required);
 		player.sendMessage(ChatColor.Yellow + "-----------------------------------------------------------");
 	}

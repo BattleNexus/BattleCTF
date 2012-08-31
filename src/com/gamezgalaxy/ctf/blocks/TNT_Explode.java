@@ -25,6 +25,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 	Server server;
 	public int wait = 400;
 	int size = 0;
+	boolean exploding = false;
 	public TNT_Explode(byte ID, String name) {
 		this(ID, name, null, null);
 	}
@@ -40,6 +41,9 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 	public TNT_Explode(Player owner) {
 		this((byte)46, "TNTEXE");
 		this.owner = owner;
+	}
+	public TNT_Explode(Player owner, Server server) {
+		this((byte)46, "TNTEXE", server, owner);
 	}
 	@Override
 	public PhysicsBlock clone(Server s) {
@@ -58,6 +62,9 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 			wait--;
 	}
 	public void explode() {
+		if (exploding)
+			return;
+		exploding = true;
 		final Random rand = new Random();
 		HashMap<Vector, Player> cache = new HashMap<Vector, Player>();
 		for (int i = 0; i < server.players.size(); i++)
@@ -73,6 +80,10 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 					Vector loc = new Vector(xx, yy, zz);
 					if (cache.containsKey(loc)) {
 						Player p = cache.get(loc);
+						if (p == owner) {
+							cache.remove(loc);
+							continue;
+						}
 						if (ctf == null)
 							p.setPos((short)(getLevel().spawnx * 32), (short)(getLevel().spawny * 32), (short)(getLevel().spawnz * 32));
 						else {
@@ -143,6 +154,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 			ctf.rewardPlayer(owner, 2 * kills + ctf.getKillStreak(owner));
 			if (ctf.tntholders.containsKey(owner))
 				ctf.tntholders.remove(owner);
+			exploding = false;
 		}
 	}
 	public boolean isInSafe(int x, int y, int z, CTF ctf) {

@@ -33,7 +33,7 @@ public class CmdShop extends Command {
 		int pages = 1;
 		int i = 0;
 		for (ShopItem s : main.INSTANCE.getShop().items) {
-			if (s.getLevel() >= ctf.getLevel(p)) {
+			if (s.getLevel() <= ctf.getLevel(p)) {
 				i++;
 				if (i >= 10) {
 					i = 0;
@@ -69,7 +69,7 @@ public class CmdShop extends Command {
 			player.sendMessage(ChatColor.Yellow + "Avarable shop items:");
 			int i = 0;
 			for (ShopItem s : main.INSTANCE.getShop().items) {
-				if (s.getLevel() >= level) {
+				if (s.getLevel() <= level) {
 					i++;
 					player.sendMessage(ChatColor.Yellow + "" + i + ". " + ChatColor.White + s.getName() + " (" + s.getPrice() + " GP's)");
 				}
@@ -92,7 +92,7 @@ public class CmdShop extends Command {
 				final int level = ctf.getLevel(player);
 				int start = 10 * (page - 1);
 				for (ShopItem s : main.INSTANCE.getShop().items) {
-					if (s.getLevel() >= level) {
+					if (s.getLevel() <= level) {
 						i++;
 						if (i < start)
 							continue;

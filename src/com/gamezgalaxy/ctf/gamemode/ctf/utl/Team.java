@@ -22,7 +22,7 @@ public class Team {
 	public String system_name;
 	public ArrayList<Player> members = new ArrayList<Player>();
 	public SafeZone safe = new SafeZone();
-	public SafeZone area = new SafeZone();
+	public SafeZone[] area = new SafeZone[100];
 	public int flagx;
 	public int flagy;
 	public int flagz;
@@ -43,12 +43,30 @@ public class Team {
 			CTF c = (CTF)main.INSTANCE.getCurrentGame();
 			if (c.holders.containsKey(p)) {
 				main.GlobalMessage(p.username + ChatColor.Dark_Red + " DROPPED THE FLAG!");
-				c.resetFlag(c.holders.get(p));
+				main.INSTANCE.getEvents().drop(p, c.holders.get(p).flagblock);
 				c.holders.remove(p);
 				c.addDrop(p);
 			}
 		}
 		p.setPos(SPAWNX, SPAWNY, SPAWNZ);
+	}
+	public boolean isSafe(Player p) {
+		for (SafeZone s : area) {
+			if (s == null)
+				continue;
+			if (s.isSafe(p))
+				return true;
+		}
+		return false;
+	}
+	public void setSpawnX(int value) {
+		SPAWNX = (short)value;
+	}
+	public void setSpawnY(int value) {
+		SPAWNY = (short)value;
+	}
+	public void setSpawnZ(int value) {
+		SPAWNZ = (short)value;
 	}
 	public void setColor(Player p) {
 		try {

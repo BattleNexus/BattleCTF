@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import com.gamezgalaxy.GGS.world.Block;
 import com.gamezgalaxy.GGS.world.Level;
+import com.gamezgalaxy.ctf.exceptions.InvalidConfigException;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
@@ -119,7 +120,7 @@ public class Map {
 								set.safe.setBigZ((Integer.parseInt(value)));
 						}
 					}
-					else if (key.split("\\.")[0].equalsIgnoreCase("area")) {
+					else if (key.split("\\.")[0].equals("spawn")) {
 						String team = key.split("\\.")[1];
 						Team set = null;
 						for (Team t : teams) {
@@ -130,18 +131,40 @@ public class Map {
 						}
 						if (set != null) {
 							String type = key.split("\\.")[2];
+							if (type.equalsIgnoreCase("x"))
+								set.setSpawnX(Integer.parseInt(value) * 32);
+							if (type.equalsIgnoreCase("y"))
+								set.setSpawnY(Integer.parseInt(value) * 32);
+							if (type.equalsIgnoreCase("z"))
+								set.setSpawnZ(Integer.parseInt(value) * 32);
+						}
+					}
+					else if (key.split("\\.")[0].equalsIgnoreCase("area")) {
+						String team = key.split("\\.")[1];
+						Team set = null;
+						for (Team t : teams) {
+							if (t.system_name.equalsIgnoreCase(team)) {
+								set = t;
+								break;
+							}
+						}
+						if (set != null) {
+							int index = Integer.parseInt(key.split("\\.")[2]);
+							String type = key.split("\\.")[3];
+							if (set.area[index] == null)
+								set.area[index] = new SafeZone();
 							if (type.equals("smallx"))
-								set.area.setSmallX(Integer.parseInt(value));
+								set.area[index].setSmallX(Integer.parseInt(value));
 							else if (type.equals("bigx"))
-								set.area.setBigX((Integer.parseInt(value)));
+								set.area[index].setBigX((Integer.parseInt(value)));
 							else if (type.equals("smally"))
-								set.area.setSmallY((Integer.parseInt(value)));
+								set.area[index].setSmallY((Integer.parseInt(value)));
 							else if (type.equals("bigy"))
-								set.area.setBigY((Integer.parseInt(value)));
+								set.area[index].setBigY((Integer.parseInt(value)));
 							else if (type.equals("smallz"))
-								set.area.setSmallZ((Integer.parseInt(value)));
+								set.area[index].setSmallZ((Integer.parseInt(value)));
 							else if (type.equals("bigz"))
-								set.area.setBigZ((Integer.parseInt(value)));
+								set.area[index].setBigZ((Integer.parseInt(value)));
 						}
 					}
 					else if (key.split("\\.")[0].equalsIgnoreCase("block")) {

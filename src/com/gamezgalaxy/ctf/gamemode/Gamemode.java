@@ -9,6 +9,7 @@ package com.gamezgalaxy.ctf.gamemode;
 
 import java.io.File;
 
+import com.gamezgalaxy.GGS.API.plugin.Game;
 import com.gamezgalaxy.GGS.world.Level;
 import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.Map;
@@ -16,6 +17,8 @@ import com.gamezgalaxy.ctf.map.utl.ConfigGraber;
 
 public abstract class Gamemode {
 	Map _map;
+	
+	public Game parent;
 	
 	private String name;
 	
@@ -61,6 +64,16 @@ public abstract class Gamemode {
 	
 	public Map getMap() {
 		return _map;
+	}
+	
+	public Game getParent() {
+		return parent;
+	}
+	
+	public main getMain() {
+		if (parent instanceof main)
+			return (main)parent;
+		return null;
 	}
 	
 	public synchronized void dispose() {

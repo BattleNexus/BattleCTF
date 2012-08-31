@@ -42,6 +42,10 @@ public class main extends Game {
 		super(server);
 		globalchat = new Messages(server);
 	}
+	
+	public EventListener getEvents() {
+		return events;
+	}
 
 	@Override
 	public void onLoad(String[] arg0) {
@@ -54,7 +58,7 @@ public class main extends Game {
 		}
 		events = new EventListener();
 		getServer().getEventSystem().registerEvents(events);
-		run = new Game();
+		run = new Gametick(this);
 		running = true;
 		run.start();
 		_shop = new Shop();
@@ -120,8 +124,11 @@ public class main extends Game {
 		while (sec >= 60) { sec -= 60; min++; }
 		return min + ":" + (sec < 10 ? "0" + sec : sec);
 	}
-	public class Game extends Thread {
+	private class Gametick extends Thread {
 		
+		Game game;
+		
+		public Gametick(Game game) { this.game = game; }
 		@Override
 		public void run() {
 			Map m = new Map();
@@ -134,6 +141,7 @@ public class main extends Game {
 				gm = m.games.get(random.nextInt(m.games.size()));
 				try {
 					getServer().Log("Setting up...");
+					gm.parent = game;
 					gm.ctfmap = ctfmap;
 					gm.setup(m);
 					getServer().Log("Done!");

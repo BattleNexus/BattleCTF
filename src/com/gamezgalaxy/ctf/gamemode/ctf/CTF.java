@@ -17,10 +17,12 @@ import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
 import com.gamezgalaxy.ctf.commands.shop.ShopItem;
 import com.gamezgalaxy.ctf.events.PlayerTaggedEvent;
+import com.gamezgalaxy.ctf.exceptions.VoteDidntStartException;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
 import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.actions.DropFlags;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
+import com.gamezgalaxy.ctf.gamemode.ctf.utl.Voter;
 import com.gamezgalaxy.ctf.main.main;
 
 public class CTF extends Gamemode {
@@ -28,11 +30,11 @@ public class CTF extends Gamemode {
 	public static final String[] TEAM_NAMES = new String[] {
 		"&1Blue Team",
 		"&4Red Team",
-		"Green Team",
-		"Purple Team",
-		"Yellow Team",
-		"Iron Team",
-		"Gold Team",
+		"&2Green Team",
+		ChatColor.Purple + "Purple Team",
+		ChatColor.Yellow + "Yellow Team",
+		ChatColor.Grey + "Iron Team",
+		ChatColor.Orange + "Gold Team",
 		"Team Derpy"
 	};
 	public static final String[] SYSTEM_TEAM_NAME = new String[] {
@@ -173,11 +175,13 @@ public class CTF extends Gamemode {
 	public void addCapture(Player p) {
 		setValue(p, "capture", 1, true);
 		saveValue(p, "capture");
+		setValue(p, "caps", 1, true);
 	}
 	
 	public void addDrop(Player p) {
 		setValue(p, "drop", 1, true);
-		saveValue(p, "capture");
+		saveValue(p, "drop");
+		setValue(p, "balls", 1, true);
 	}
 	
 	public int getCapture(Player p) {
@@ -218,6 +222,22 @@ public class CTF extends Gamemode {
 		return required;
 	}
 	
+	public int capturesThisRound(Player p) {
+		return getValue(p, "caps");
+	}
+	
+	public void resetCapturesthisRound(Player p) {
+		setValue(p, "caps", 0, false);
+	}
+	
+	public int dropsThisRound(Player p) {
+		return getValue(p, "balls");
+	}
+	
+	public void resetDropsthisRound(Player p) {
+		setValue(p, "balls", 0, false);
+	}
+	
 	public void setValue(Player p, String setting, int value, boolean add) {
 		if (add) {
 			int points = getValue(p, setting);
@@ -248,15 +268,58 @@ public class CTF extends Gamemode {
 		main.INSTANCE.getServer().Log("Round end!");
 		main.GlobalMessage(ChatColor.Dark_Green + "The game is over!");
 		main.GlobalMessage("The " + getWinner().name + ChatColor.White + " has won this round!");
-		for (Player p : getWinner().members)
+		for (Player p : getWinner().members) {
 			rewardPlayer(p, 10);
+			this.addEXP(p, 50 * teams.size());
+		}
 		for (Team t : teams) { 
 			t.points = 0;
+		}
+		for (Player p : main.INSTANCE.getServer().players) {
+			int caps = getCapture(p);
+			if (caps == 0)
+				caps = 1;
+			int drops = getDrop(p);
+			if (drops == 0)
+				drops = 1;
+			int temp = capturesThisRound(p);
+			if (temp == 0)
+				temp = 1;
+			int temp2 = dropsThisRound(p);
+			if (temp2 == 0)
+				temp2 = 1;
+			double rate = (double)((double)caps / (double)drops);
+			int EXP = (int)((10 * temp / temp2) * rate);
+			addEXP(p, EXP);
+			resetCapturesthisRound(p);
+			resetDropsthisRound(p);
 		}
 		this.dominate.clear();
 		this.holders.clear();
 		this.tntholders.clear();
+		try {
+			Thread.sleep(10000);
+			vote();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (VoteDidntStartException e) {
+			e.printStackTrace();
+		}
 		super.dispose();
+	}
+	
+	private void vote() throws VoteDidntStartException, InterruptedException {
+		Voter v = new Voter(this, main.INSTANCE.getServer());
+		v.start();
+		main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.Dark_Red + "You will have 30 seconds to vote..");
+		Thread.sleep(30000);
+		v.end();
+		main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.White + "Voting has ending!");
+		String winner = v.getResults();
+		main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.White + winner + ChatColor.White + " won the vote!");
+		main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.Dark_Red + "Starting next round...");
+		v.reset();
+		Thread.sleep(5000);
 	}
 	
 	public Team getWinner() {
@@ -299,7 +362,7 @@ public class CTF extends Gamemode {
 								int level = getLevel(p);
 								String message;
 								for (ShopItem item : main.INSTANCE.getShop().items) {
-									if (item.getLevel() > level)
+									if (item.getLevel() < level)
 										message = item.getLevelUpMessage(p);
 									else
 										message = item.checkUnlock(level);
@@ -308,7 +371,7 @@ public class CTF extends Gamemode {
 									p.sendMessage(ChatColor.Bright_Green + "+ " + message);
 								}
 							}
-							if (t.area.isSafe(p)) { //If he's inside his own field
+							if (t.isSafe(p)) { //If he's inside his own field
 								int minx = p.getBlockX() - 2;
 								int maxx = p.getBlockX() + 2;
 								int miny = p.getBlockY() - 2;

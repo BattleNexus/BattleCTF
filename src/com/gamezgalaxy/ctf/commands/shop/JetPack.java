@@ -78,7 +78,7 @@ public class JetPack extends ShopItem {
 			player.sendMessage("You are now " + ChatColor.Bright_Green + "FLYING!");
 			player.sendMessage("You will be able to fly for 10 seconds..");
 			while (seconds > 0) {
-				if (i >= 100) {
+				if (i >= 50) {
 					i = 0;
 					seconds--;
 				}

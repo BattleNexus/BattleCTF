@@ -4,6 +4,7 @@ import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
+import com.gamezgalaxy.ctf.main.main;
 
 public class DropFlags extends Action {
 
@@ -19,6 +20,7 @@ public class DropFlags extends Action {
 			c.resetFlag(b);
 		}
 		c.holders.clear();
+		main.INSTANCE.getEvents().clear();
 	}
 
 }
