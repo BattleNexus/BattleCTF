@@ -316,6 +316,7 @@ public class CTF extends Gamemode {
 		v.end();
 		main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.White + "Voting has ending!");
 		String winner = v.getResults();
+		main.INSTANCE.setNextMap(winner);
 		main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.White + winner + ChatColor.White + " won the vote!");
 		main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.Dark_Red + "Starting next round...");
 		v.reset();

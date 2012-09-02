@@ -38,6 +38,8 @@ public class main extends Game {
 	public static final Random random = new Random();
 	private Shop _shop;
 	boolean ctfmap = true;
+	private String welcome;
+	private int index;
 	public main(Server server) {
 		super(server);
 		globalchat = new Messages(server);
@@ -46,10 +48,21 @@ public class main extends Game {
 	public EventListener getEvents() {
 		return events;
 	}
+	
+	public void setNextMap(String value) {
+		if (maps.contains(value)) {
+			index = maps.indexOf(value);
+			System.out.println("Next map will be " + value + " (ID: " + index + ")");
+		}
+	}
 
 	@Override
 	public void onLoad(String[] arg0) {
 		INSTANCE = this;
+		if (getServer().getLevelHandler().findLevel("ctf") != null)
+			getServer().getLevelHandler().unloadLevel(getServer().getLevelHandler().findLevel("ctf"), false);
+		if (getServer().getLevelHandler().findLevel("ctf2") != null)
+			getServer().getLevelHandler().unloadLevel(getServer().getLevelHandler().findLevel("ctf2"), false);
 		try {
 			loadMaps();
 		} catch (IOException e) {
@@ -66,6 +79,9 @@ public class main extends Game {
 		getServer().getCommandHandler().addCommand(new CmdPoints());
 		getServer().getCommandHandler().addCommand(new CmdShop());
 		getServer().getCommandHandler().addCommand(new CmdFlagReset());
+		welcome = getServer().getSystemProperties().getValue("welcome-message");
+		if (welcome.equals("null"))
+			getServer().getSystemProperties().addSetting("welcome-message", "Welcome to my CTF server!");
 	}
 	
 	public Gamemode getCurrentGame() {
@@ -131,9 +147,14 @@ public class main extends Game {
 		public Gametick(Game game) { this.game = game; }
 		@Override
 		public void run() {
-			Map m = new Map();
+			Map m = null;
 			while (running) {
+				m = new Map();
 				String map = maps.get(random.nextInt(maps.size()));
+				if (index != -1) {
+					map = maps.get(index);
+					index = -1;
+				}
 				m.mapname = map;
 				getServer().Log("Loading " + map + " config!");
 				m.load();
@@ -158,6 +179,7 @@ public class main extends Game {
 					e.printStackTrace();
 				}
 				ctfmap = !ctfmap;
+				m = null;
 			}
 		}
 	}

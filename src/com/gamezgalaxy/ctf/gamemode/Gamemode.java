@@ -28,6 +28,8 @@ public abstract class Gamemode {
 	
 	public void setup(Map map) throws Exception {
 		this._map = map;
+		//Unload level if it exists
+		System.out.println("Use : " + (ctfmap ? "ctf" : "ctf2"));
 		//Swap levels
 		final String BACKUP_PATH = "backups/" + (ctfmap ? "ctf" : "ctf2") + "/" + ConfigGraber.getMapBackupNumber(map.mapname, "config/") + "/" + (ctfmap ? "ctf" : "ctf2") + ".ggs";
 		final String FINAL_PATH = "levels/" + (ctfmap ? "ctf" : "ctf2") + ".ggs";
@@ -50,7 +52,7 @@ public abstract class Gamemode {
 		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2")) == null)
 			throw new Exception("Error Restoring from backup.");
 		main.INSTANCE.getServer().MainLevel = main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2"));
-		_map.level = main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2"));
+		_map.level = main.INSTANCE.getServer().MainLevel;
 		//Unload the current game level if one is loaded..
 		//We swap the in-line if statement to get which one is loaded, not which one will be
 		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)

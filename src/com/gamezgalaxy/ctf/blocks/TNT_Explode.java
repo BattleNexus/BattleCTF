@@ -49,7 +49,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 	public PhysicsBlock clone(Server s) {
 		TNT_Explode te = new TNT_Explode(ID, name, s, owner);
 		te.wait = new Random().nextInt(40 - 5) + 5;
-		te.size = new Random().nextInt(3) + 1;
+		te.size = 2;
 		return te;
 	}
 

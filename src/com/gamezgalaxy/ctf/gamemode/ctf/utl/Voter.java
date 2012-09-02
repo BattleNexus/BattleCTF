@@ -64,13 +64,13 @@ public class Voter implements Listener {
 				event.Cancel(true);
 				return;
 			}
-			String map = votes.keySet().toArray(new String[3])[index];
+			String map = votes.keySet().toArray(new String[3])[index - 1];
 			int value = votes.get(map).intValue();
 			value++;
 			votes.remove(map);
 			votes.put(map, value);
-			event.getPlayer().sendMessage(ChatColor.Dark_Green + "You voted for " + map);
-			event.getPlayer().sendMessage(ChatColor.Dark_Green + "Thanks :D");
+			event.getPlayer().sendMessage("You voted for " + map);
+			event.getPlayer().sendMessage(ChatColor.Bright_Green + "Thanks :D");
 		}
 		catch (Exception e) {
 			if (!votes.containsKey(event.getMessage())) {
