@@ -1,13 +1,13 @@
 package com.gamezgalaxy.ctf.commands;
 
-import com.gamezgalaxy.GGS.API.plugin.Command;
+import com.gamezgalaxy.GGS.API.plugin.PlayerCommand;
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
 import com.gamezgalaxy.ctf.main.main;
 
-public class CmdFlagReset extends Command {
+public class CmdFlagReset extends PlayerCommand {
 
 	@Override
 	public String[] getShortcuts() {

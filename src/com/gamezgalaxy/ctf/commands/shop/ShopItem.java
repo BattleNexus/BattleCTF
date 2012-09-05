@@ -1,12 +1,12 @@
 package com.gamezgalaxy.ctf.commands.shop;
 
-import com.gamezgalaxy.GGS.API.plugin.Command;
+import com.gamezgalaxy.GGS.API.plugin.PlayerCommand;
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.main.main;
 
-public abstract class ShopItem extends Command {
+public abstract class ShopItem extends PlayerCommand {
 	
 	private int _price = 0;
 	

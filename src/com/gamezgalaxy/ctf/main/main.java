@@ -115,7 +115,7 @@ public class main extends Game {
 	}
 
 	@Override
-	public void Tick() {
+	public void tick() {
 		if (gm == null)
 			return;
 		if (gm.isRunning())

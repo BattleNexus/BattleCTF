@@ -28,7 +28,7 @@ public class Explosion extends PhysicsBlock {
 	}
 
 	@Override
-	public void Tick() {
+	public void tick() {
 		if (wait <= 0) {
 			wait = 10;
 			if (rand.nextInt(11) <= 8)

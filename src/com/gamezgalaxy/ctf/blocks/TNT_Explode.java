@@ -54,7 +54,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 	}
 
 	@Override
-	public void Tick() {
+	public void tick() {
 		if (wait <= 0) {
 			explode();
 		}
