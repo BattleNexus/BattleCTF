@@ -1,5 +1,6 @@
 package com.gamezgalaxy.ctf.commands;
 
+import com.gamezgalaxy.GGS.API.CommandExecutor;
 import com.gamezgalaxy.GGS.API.plugin.PlayerCommand;
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
@@ -53,6 +54,12 @@ public class CmdFlagReset extends PlayerCommand {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void help(CommandExecutor executor) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

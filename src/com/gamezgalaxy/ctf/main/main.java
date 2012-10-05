@@ -79,6 +79,7 @@ public class main extends Game {
 		getServer().getCommandHandler().addCommand(new CmdPoints());
 		getServer().getCommandHandler().addCommand(new CmdShop());
 		getServer().getCommandHandler().addCommand(new CmdFlagReset());
+		getServer().getCommandHandler().addCommand(new CmdSetup());
 		welcome = getServer().getSystemProperties().getValue("welcome-message");
 		if (welcome.equals("null"))
 			getServer().getSystemProperties().addSetting("welcome-message", "Welcome to my CTF server!");

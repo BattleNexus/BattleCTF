@@ -7,15 +7,10 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.blocks;
 
-import com.gamezgalaxy.GGS.world.Level;
 import com.gamezgalaxy.GGS.world.blocks.Blue;
 
 public class BlueFlag extends Blue {
 
 	private static final long serialVersionUID = 1L;
-
-	@Override
-	public void onDelete(Level l, int index) {
-	}
 
 }

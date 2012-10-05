@@ -1,5 +1,6 @@
 package com.gamezgalaxy.ctf.commands;
 
+import com.gamezgalaxy.GGS.API.CommandExecutor;
 import com.gamezgalaxy.GGS.API.plugin.PlayerCommand;
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
@@ -65,6 +66,12 @@ public class CmdPoints extends PlayerCommand {
 			player.sendMessage("Team: " + team.name);
 		player.sendMessage("&eLevel :: &a" + level + "    &eEXP :: &a" + exp + "/" + required);
 		player.sendMessage(ChatColor.Yellow + "-----------------------------------------------------------");
+	}
+
+	@Override
+	public void help(CommandExecutor executor) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.gamemode.ctf;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +47,16 @@ public class CTF extends Gamemode {
 		"iron",
 		"gold",
 		"derpy"
+	};
+	public static final String[] DEFAULT_FLAGS = new String[] {
+		"com.gamezgalaxy.ctf.blocks.BlueFlag",
+		"com.gamezgalaxy.ctf.blocks.RedFlag",
+		"com.gamezgalaxy.GGS.world.blocks.Green",
+		"com.gamezgalaxy.GGS.world.blocks.Purple",
+		"com.gamezgalaxy.GGS.world.blocks.Yellow",
+		"com.gamezgalaxy.GGS.world.blocks.IronBlock",
+		"com.gamezgalaxy.GGS.world.blocks.GoldBlock",
+		"com.gamezgalaxy.GGS.world.blocks.Orange"
 	};
 	public ArrayList<Team> teams = new ArrayList<Team>();
 	public HashMap<Player, Team> holders = new HashMap<Player, Team>();
@@ -152,6 +163,8 @@ public class CTF extends Gamemode {
 			tagger.saveValue("points");
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		main.GlobalMessage(tagger.username + " &2TAGGED&f " + tagged.username);
 	}
@@ -250,12 +263,22 @@ public class CTF extends Gamemode {
 	public void saveValue(Player p, String setting) {
 		try {
 			p.saveValue(setting);
-		} catch (SQLException e) { main.INSTANCE.getServer().Log("Could not save " + p.username + " " + setting + "..."); }
+		} catch (SQLException e) { main.INSTANCE.getServer().Log("Could not save " + p.username + " " + setting + "..."); } catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	public int getValue(Player p, String setting) {
 		int points = 0;
-		if (p.getValue(setting) != null)
-			points = Integer.parseInt(p.getValue(setting));
+		try {
+			if (p.getValue(setting) != null)
+				points = p.getValue(setting);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return points;
 	}
 

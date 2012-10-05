@@ -2,6 +2,7 @@ package com.gamezgalaxy.ctf.commands.shop;
 
 import java.util.ArrayList;
 
+import com.gamezgalaxy.GGS.API.CommandExecutor;
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
 import com.gamezgalaxy.GGS.world.Block;
@@ -125,5 +126,10 @@ public class JetPack extends ShopItem {
 			temp.clear();
 			player.sendMessage(ChatColor.Dark_Red + "You have stopped flying..");
 		}
+	}
+	@Override
+	public void help(CommandExecutor executor) {
+		// TODO Auto-generated method stub
+		
 	}
 }

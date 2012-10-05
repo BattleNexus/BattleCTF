@@ -1,5 +1,6 @@
 package com.gamezgalaxy.ctf.commands.shop;
 
+import com.gamezgalaxy.GGS.API.CommandExecutor;
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.chat.ColorFormatException;
 import com.gamezgalaxy.GGS.iomodel.Player;
@@ -95,6 +96,11 @@ public class Disguise extends ShopItem {
 			p.sendMessage(ChatColor.Dark_Red + "You are no longer disguised as " + t.name);
 			orginal.setColor(p);
 		}
+	}
+	@Override
+	public void help(CommandExecutor executor) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

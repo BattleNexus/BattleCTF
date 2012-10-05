@@ -1,5 +1,6 @@
 package com.gamezgalaxy.ctf.commands.shop;
 
+import com.gamezgalaxy.GGS.API.CommandExecutor;
 import com.gamezgalaxy.GGS.API.EventHandler;
 import com.gamezgalaxy.GGS.API.Listener;
 import com.gamezgalaxy.GGS.chat.ChatColor;
@@ -68,5 +69,11 @@ public class Armor extends ShopItem {
 			main.INSTANCE.getServer().getEventSystem().registerEvents(this);
 			player.sendMessage(ChatColor.Dark_Green + "Your armor is now active with the power of " + power + "!");
 		}
+	}
+
+	@Override
+	public void help(CommandExecutor executor) {
+		// TODO Auto-generated method stub
+		
 	}
 }

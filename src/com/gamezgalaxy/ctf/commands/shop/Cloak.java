@@ -2,6 +2,7 @@ package com.gamezgalaxy.ctf.commands.shop;
 
 import java.util.ArrayList;
 
+import com.gamezgalaxy.GGS.API.CommandExecutor;
 import com.gamezgalaxy.GGS.API.EventHandler;
 import com.gamezgalaxy.GGS.API.Listener;
 import com.gamezgalaxy.GGS.chat.ChatColor;
@@ -101,6 +102,12 @@ public class Cloak extends ShopItem implements Listener {
 		if (ctf.getLevel(p) % 3 == 0)
 			return ChatColor.White + "Your cloak has been upgraded! It will now last for " + (ctf.getLevel(p) * 2 + 15) + " seconds!";
 		return "";
+	}
+
+	@Override
+	public void help(CommandExecutor executor) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

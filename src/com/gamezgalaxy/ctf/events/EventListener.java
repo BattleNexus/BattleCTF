@@ -35,6 +35,8 @@ public class EventListener implements Listener {
 		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
 			return;
 		final CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
+		if (event.getPlayer().getLevel() != ctf.getMap().level)
+			return;
 		if (flagfloat.containsKey(event.getPlayer())) {
 			Integer[] temp = flagfloat.get(event.getPlayer());
 			int x = temp[0].intValue();
@@ -92,6 +94,8 @@ public class EventListener implements Listener {
 		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
 			return;
 		final CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
+		if (event.getPlayer().getLevel() != ctf.getMap().level)
+			return;
 		if (ctf.isOnNoTeam(event.getPlayer())) {
 			event.Cancel(true);
 			event.getPlayer().sendMessage("&2[GBot] You are spectating!");
@@ -187,6 +191,8 @@ public class EventListener implements Listener {
 		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
 			return;
 		final CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
+		if (event.getPlayer().getLevel() != ctf.getMap().level)
+			return;
 		final Player p = event.getPlayer();
 		if (ctf.getTeam(p) != null)
 			ctf.getTeam(p).spawnPlayer(p);
@@ -197,6 +203,8 @@ public class EventListener implements Listener {
 		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
 			return;
 		final CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
+		if (event.getPlayer().getLevel() != ctf.getMap().level)
+			return;
 		if (ctf.isOnNoTeam(event.getPlayer())) {
 			for (int i = 0; i < ctf.teamcount; i++) {
 				if (CTF.SYSTEM_TEAM_NAME[i].equalsIgnoreCase(event.getCommand())) {
