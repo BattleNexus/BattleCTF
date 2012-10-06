@@ -82,6 +82,7 @@ public class CTF extends Gamemode {
 	private int maxgptag;
 	private int maxexplosetag;
 	private int maxgplosetag;
+	private int votecount;
 	private static final Random RANDOM = new Random();
 	@Override
 	public void roundStart() {
@@ -153,6 +154,7 @@ public class CTF extends Gamemode {
 		this.maxexptag = Integer.parseInt(prop.getProperty("Max_EXP_onTag", "0"));
 		this.maxgptag = Integer.parseInt(prop.getProperty("Max_EXP_onTag", "2"));
 		this.maxgplosetag = Integer.parseInt(prop.getProperty("Max_EXP-Lose_onTagged", "0"));
+		this.votecount = Integer.parseInt(prop.getProperty("Map_Vote_Count", "3"));
 		FileOutputStream out = new FileOutputStream("properties/ctf.properties");
 		prop.store(out, "These are the reward settings for the CTF Gamemode.");
 		out.close();
@@ -202,10 +204,14 @@ public class CTF extends Gamemode {
 			return;
 		getTeam(tagged).spawnPlayer(tagged); //Spawn the person who got tagged
 		//Reward the tagger
-		addEXP(tagger, RANDOM.nextInt(this.maxexptag));
-		addEXP(tagged, RANDOM.nextInt(this.maxexplosetag) * -1);
-		rewardPlayer(tagger, RANDOM.nextInt(this.maxgptag));
-		rewardPlayer(tagged, RANDOM.nextInt(this.maxgplosetag) * -1);
+		if (maxexptag > 0)
+			addEXP(tagger, RANDOM.nextInt(this.maxexptag));
+		if (maxexplosetag > 0)
+			addEXP(tagged, RANDOM.nextInt(this.maxexplosetag) * -1);
+		if (maxgptag > 0)
+			rewardPlayer(tagger, RANDOM.nextInt(this.maxgptag));
+		if (maxgplosetag > 0)
+			rewardPlayer(tagged, RANDOM.nextInt(this.maxgplosetag) * -1);
 		try {
 			tagger.saveValue("points");
 		} catch (SQLException e) {
@@ -339,8 +345,10 @@ public class CTF extends Gamemode {
 		main.GlobalMessage(ChatColor.Dark_Green + "The game is over!");
 		main.GlobalMessage("The " + getWinner().name + ChatColor.White + " has won this round!");
 		for (Player p : getWinner().members) {
-			rewardPlayer(p, RANDOM.nextInt(this.maxgpwin));
-			this.addEXP(p, RANDOM.nextInt(this.maxexpwin) * teams.size());
+			if (maxgpwin > 0)
+				rewardPlayer(p, RANDOM.nextInt(this.maxgpwin));
+			if (maxexpwin > 0)
+				addEXP(p, RANDOM.nextInt(this.maxexpwin) * teams.size());
 		}
 		for (Team t : teams) { 
 			t.points = 0;
@@ -380,6 +388,7 @@ public class CTF extends Gamemode {
 	
 	private void vote() throws VoteDidntStartException, InterruptedException {
 		Voter v = new Voter(this, main.INSTANCE.getServer());
+		v.setMapCount(votecount);
 		v.start();
 		main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + ChatColor.Dark_Red + "You will have 30 seconds to vote..");
 		Thread.sleep(30000);
@@ -471,12 +480,16 @@ public class CTF extends Gamemode {
 	}
 
 	public void rewardCap(Player player) {
-		addEXP(player, RANDOM.nextInt(this.maxexpcap));
-		rewardPlayer(player, RANDOM.nextInt(this.maxgpcap));
+		if (this.maxexpcap > 0)
+			addEXP(player, RANDOM.nextInt(this.maxexpcap));
+		if (this.maxgpcap > 0)
+			rewardPlayer(player, RANDOM.nextInt(this.maxgpcap));
 	}
 	
 	public void punishDrop(Player player) {
-		addEXP(player, RANDOM.nextInt(this.maxexpdrop) * -1);
-		rewardPlayer(player, RANDOM.nextInt(this.maxgpdrop) * -1);
+		if (this.maxexpdrop > 0)
+			addEXP(player, RANDOM.nextInt(this.maxexpdrop) * -1);
+		if (this.maxgpdrop > 0)
+			rewardPlayer(player, RANDOM.nextInt(this.maxgpdrop) * -1);
 	}
 }

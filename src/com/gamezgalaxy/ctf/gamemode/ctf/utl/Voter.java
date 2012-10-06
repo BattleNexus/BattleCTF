@@ -1,7 +1,6 @@
 package com.gamezgalaxy.ctf.gamemode.ctf.utl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 import com.gamezgalaxy.GGS.API.EventHandler;
@@ -18,32 +17,77 @@ import com.gamezgalaxy.ctf.main.main;
 public class Voter implements Listener {
 	
 	private Gamemode game;
+	private int count;
 	private Server server;
-	private String map1;
-	private String map2;
-	private String map3;
 	private boolean started;
-	private HashMap<String, Integer> votes = new HashMap<String, Integer>();
+	private String[] cache;
+	private ArrayList<MapData> maps = new ArrayList<MapData>();
 	private ArrayList<Player> voters = new ArrayList<Player>();
 	public Voter(Gamemode game, Server server) {
 		this.game = game;
 		this.server = server;
 	}
 	
+	public void setMapCount(int count) {
+		this.count = count;
+	}
+	
+	private void pick() {
+		final Random rand = new Random();
+		for (int i = 0; i < count; i++) {
+			MapData md = new MapData(game.getMain().maps.get(rand.nextInt(game.getMain().maps.size())));
+			maps.add(md);
+		}
+	}
+	
+	private String[] generateLines() {
+		if (cache == null) {
+			ArrayList<String> lines = new ArrayList<String>();
+			String finals = "";
+			for (int i = 0; i < maps.size(); i++) {
+				finals += "" + ChatColor.Bright_Green + (i + 1) + ". " + ChatColor.White + maps.get(i).getMap();
+				if ((i + 1) % 3 == 0) {
+					lines.add(finals);
+					System.out.println(finals);
+					finals = "";
+				}
+			}
+			cache = lines.toArray(new String[lines.size()]);
+		}
+		return cache;
+	}
+	
+	private void sendGlobalVoteMessage() {
+		String[] lines = generateLines();
+		main.GlobalMessage(ChatColor.Yellow + "------------------------------------------------------------");
+		main.GlobalMessage(ChatColor.Dark_Green + "Time to vote! (Type the number/name of the map you want!");
+		for (String line : lines) {
+			main.GlobalMessage(line);
+		}
+		main.GlobalMessage(ChatColor.Yellow + "------------------------------------------------------------");
+	}
+	
+	private void sendMapMessage(Player p) {
+		String[] lines = generateLines();
+		p.sendMessage(ChatColor.Dark_Green + "Time to vote! (Type the number/name of the map you want!");
+		for (String line : lines) {
+			p.sendMessage(line);
+		}
+	}
+	
+	private MapData findMap(String name) {
+		for (MapData d : maps) {
+			if (d.getMap().equalsIgnoreCase(name))
+				return d;
+		}
+		return null;
+	}
+	
 	public void start() {
 		if (started)
 			return;
-		//Pick 3 random maps
-		Random rand = new Random();
-		map1 = game.getMain().maps.get(rand.nextInt(game.getMain().maps.size()));
-		map2 = game.getMain().maps.get(rand.nextInt(game.getMain().maps.size()));
-		map3 = game.getMain().maps.get(rand.nextInt(game.getMain().maps.size()));
-		votes.put(map1, 0);
-		votes.put(map2, 0);
-		votes.put(map3, 0);
-		main.GlobalMessage(ChatColor.Yellow + "------------------------------------------------------------");
-		main.GlobalMessage(ChatColor.Dark_Green + "Time to vote! (Type the number/name of the map you want!");
-		main.GlobalMessage(ChatColor.Bright_Green + "1. " + map1 + ChatColor.Bright_Green + " 2. " + map2 + ChatColor.Bright_Green + " 3. " + map3);
+		pick();
+		sendGlobalVoteMessage();
 		started = true;
 		server.getEventSystem().registerEvents(this);
 	}
@@ -58,31 +102,26 @@ public class Voter implements Listener {
 		try {
 			int index = Integer.parseInt(event.getMessage());
 			index--;
-			if (index < 0 || index >= 3) {
+			if (index < 0 || index >= count) {
 				event.getPlayer().sendMessage(ChatColor.Dark_Red + "Invalid map!");
-				event.getPlayer().sendMessage(ChatColor.Bright_Green + "1. " + map1 + ChatColor.Bright_Green + " 2. " + map2 + ChatColor.Bright_Green + " 3. " + map3);
+				sendMapMessage(event.getPlayer());
 				event.Cancel(true);
 				return;
 			}
-			String map = votes.keySet().toArray(new String[3])[index - 1];
-			int value = votes.get(map).intValue();
-			value++;
-			votes.remove(map);
-			votes.put(map, value);
-			event.getPlayer().sendMessage("You voted for " + map);
+			MapData d = maps.get(index);
+			d.votes++;
+			event.getPlayer().sendMessage("You voted for " + d.getMap());
 			event.getPlayer().sendMessage(ChatColor.Bright_Green + "Thanks :D");
 		}
 		catch (Exception e) {
-			if (!votes.containsKey(event.getMessage())) {
+			MapData md = findMap(event.getMessage());
+			if (md == null) {
 				event.getPlayer().sendMessage(ChatColor.Dark_Red + "Invalid map!");
-				event.getPlayer().sendMessage(ChatColor.Bright_Green + "1. " + map1 + ChatColor.Bright_Green + " 2. " + map2 + ChatColor.Bright_Green + " 3. " + map3);
+				sendMapMessage(event.getPlayer());
 				event.Cancel(true);
 				return;
 			}
-			int value = votes.get(event.getMessage()).intValue();
-			value++;
-			votes.remove(event.getMessage());
-			votes.put(event.getMessage(), value);
+			md.votes++;
 			event.getPlayer().sendMessage("You voted for " + event.getMessage());
 			event.getPlayer().sendMessage(ChatColor.Bright_Green + "Thanks :D");
 		}
@@ -98,22 +137,52 @@ public class Voter implements Listener {
 	}
 	
 	public String getResults() {
-		if (votes.get(map1) > votes.get(map2) && votes.get(map1) > votes.get(map3))
-			return map1;
-		else if (votes.get(map2) > votes.get(map1) && votes.get(map2) > votes.get(map3))
-			return map2;
-		else if (votes.get(map3) > votes.get(map1) && votes.get(map3) > votes.get(map2))
-			return map3;
-		else
-			return map1;
+		MapData maxd = null;
+		for (MapData d : maps) {
+			if (maxd == null)
+				maxd = d;
+			else if (maxd.getVotes() < d.getVotes())
+				maxd = d;
+		}
+		return maxd.getMap();
 	}
 	
 	public void reset() {
-		votes.clear();
+		maps.clear();
 		voters.clear();
-		map1 = "";
-		map2 = "";
-		map3 = "";
+	}
+	
+	private class MapData {
+		private String map;
+		
+		private int votes;
+		
+		public MapData(String map) {
+			this.setMap(map);
+		}
+
+		/**
+		 * @return the map
+		 */
+		public String getMap() {
+			return map;
+		}
+
+		/**
+		 * @param map the map to set
+		 */
+		public void setMap(String map) {
+			this.map = map;
+		}
+
+		/**
+		 * @return the votes
+		 */
+		public int getVotes() {
+			return votes;
+		}
+		
+		
 	}
 
 }
