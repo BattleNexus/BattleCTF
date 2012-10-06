@@ -59,21 +59,13 @@ public class main extends Game {
 	@Override
 	public void onLoad(String[] arg0) {
 		INSTANCE = this;
-		if (getServer().getLevelHandler().findLevel("ctf") != null)
-			getServer().getLevelHandler().unloadLevel(getServer().getLevelHandler().findLevel("ctf"), false);
-		if (getServer().getLevelHandler().findLevel("ctf2") != null)
-			getServer().getLevelHandler().unloadLevel(getServer().getLevelHandler().findLevel("ctf2"), false);
 		try {
 			loadMaps();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		events = new EventListener();
 		getServer().getEventSystem().registerEvents(events);
-		run = new Gametick(this);
-		running = true;
-		run.start();
 		_shop = new Shop();
 		_shop.Load();
 		getServer().getCommandHandler().addCommand(new CmdPoints());
@@ -83,6 +75,12 @@ public class main extends Game {
 		welcome = getServer().getSystemProperties().getValue("welcome-message");
 		if (welcome.equals("null"))
 			getServer().getSystemProperties().addSetting("welcome-message", "Welcome to my CTF server!");
+	}
+	
+	public void start() {
+		run = new Gametick(this);
+		running = true;
+		run.start();
 	}
 	
 	public Gamemode getCurrentGame() {

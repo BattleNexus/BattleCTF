@@ -112,7 +112,7 @@ public class CTF extends Gamemode {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		goal = mingoal + (int)(RANDOM.nextInt() * ((maxgoal - mingoal) + 1));
+		goal = mingoal + (int)(RANDOM.nextDouble() * ((maxgoal - mingoal) + 1));
 		running = true;
 		Thread run = new Checker();
 		run.start();

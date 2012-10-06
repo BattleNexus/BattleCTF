@@ -56,7 +56,7 @@ public class CmdPoints extends PlayerCommand {
 		int level = ctf.getLevel(stats);
 		int required = ctf.getRequiredEXP(stats);
 		Team team = ctf.getTeam(stats);
-		player.sendMessage(ChatColor.Yellow + "Stats for: " + stats.username);
+		player.sendMessage(ChatColor.Yellow + "Stats for: " + stats.getDisplayName());
 		player.sendMessage(ChatColor.Yellow + "------------------------------------------------------------");
 		player.sendMessage("GP: &a" + points);
 		player.sendMessage("Flag Captures: " + caps);

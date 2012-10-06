@@ -39,24 +39,25 @@ public abstract class Gamemode {
 			//TODO Convert .lvl to .ggs
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_DAT_BACKUP_PATH).exists()) {
-			main.INSTANCE.getServer().Log("Converting .dat..");
+			getMain().getServer().Log("Converting .dat..");
 			Level l = Level.Convert(CONVERT_DAT_BACKUP_PATH);
 			new File(CONVERT_DAT_BACKUP_PATH).delete();
 			l.Save();
 			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
-			main.INSTANCE.getServer().Log("Done!");
+			getMain().getServer().Log("Done!");
 		}
 		ConfigGraber.copyfile(BACKUP_PATH, FINAL_PATH);
-		main.INSTANCE.getServer().getLevelHandler().loadLevel(FINAL_PATH);
+		getMain().getServer().getLevelHandler().loadLevel(FINAL_PATH);
 		//Set main level
-		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2")) == null)
+		if (getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2")) == null)
 			throw new Exception("Error Restoring from backup.");
-		main.INSTANCE.getServer().MainLevel = main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2"));
-		_map.level = main.INSTANCE.getServer().MainLevel;
+		getMain().getServer().MainLevel = getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2"));
+		_map.level = getMain().getServer().MainLevel;
+		getMain().getServer().MainLevel.setAutoSave(false);
 		//Unload the current game level if one is loaded..
 		//We swap the in-line if statement to get which one is loaded, not which one will be
-		if (main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)
-			main.INSTANCE.getServer().getLevelHandler().unloadLevel(main.INSTANCE.getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")), false);
+		if (getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)
+			getMain().getServer().getLevelHandler().unloadLevel(getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")), false);
 	}
 	public abstract void roundStart();
 	

@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import com.gamezgalaxy.GGS.API.EventHandler;
 import com.gamezgalaxy.GGS.API.Listener;
+import com.gamezgalaxy.GGS.API.level.AllLevelLoadedEvent;
 import com.gamezgalaxy.GGS.API.level.PlayerJoinedLevel;
 import com.gamezgalaxy.GGS.API.player.PlayerBlockChangeEvent;
 import com.gamezgalaxy.GGS.API.player.PlayerCommandEvent;
@@ -89,6 +90,16 @@ public class EventListener implements Listener {
 		};
 		t.start();
 	}
+	
+	@EventHandler
+	public void onAllLoad(AllLevelLoadedEvent event) {
+		if (event.getLevelHandler().findLevel("ctf") != null)
+			event.getLevelHandler().unloadLevel(event.getLevelHandler().findLevel("ctf"), false);
+		if (event.getLevelHandler().findLevel("ctf2") != null)
+			event.getLevelHandler().unloadLevel(event.getLevelHandler().findLevel("ctf2"), false);
+		main.INSTANCE.start();
+	}
+	
 	@EventHandler
 	public void onBreak(PlayerBlockChangeEvent event) {
 		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
