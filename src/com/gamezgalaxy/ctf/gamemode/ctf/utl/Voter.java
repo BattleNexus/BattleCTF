@@ -45,7 +45,7 @@ public class Voter implements Listener {
 			ArrayList<String> lines = new ArrayList<String>();
 			String finals = "";
 			for (int i = 0; i < maps.size(); i++) {
-				finals += "" + ChatColor.Bright_Green + (i + 1) + ". " + ChatColor.White + maps.get(i).getMap();
+				finals += "" + ChatColor.Bright_Green + (i + 1) + ". " + ChatColor.White + maps.get(i).getMap() + " ";
 				if ((i + 1) % 3 == 0) {
 					lines.add(finals);
 					System.out.println(finals);
