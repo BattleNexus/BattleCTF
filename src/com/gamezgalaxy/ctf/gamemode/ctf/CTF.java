@@ -7,14 +7,18 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.gamemode.ctf;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Random;
 
 import com.gamezgalaxy.GGS.chat.ChatColor;
 import com.gamezgalaxy.GGS.iomodel.Player;
+import com.gamezgalaxy.GGS.util.FileUtils;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
 import com.gamezgalaxy.ctf.commands.shop.ShopItem;
 import com.gamezgalaxy.ctf.events.PlayerTaggedEvent;
@@ -66,6 +70,19 @@ public class CTF extends Gamemode {
 	public int teamcount;
 	public int goal;
 	public boolean started;
+	private int mingoal;
+	private int maxgoal;
+	private int maxexpcap;
+	private int maxgpcap;
+	private int maxexpwin;
+	private int maxgpwin;
+	private int maxexpdrop;
+	private int maxgpdrop;
+	private int maxexptag;
+	private int maxgptag;
+	private int maxexplosetag;
+	private int maxgplosetag;
+	private static final Random RANDOM = new Random();
 	@Override
 	public void roundStart() {
 		//Set each team
@@ -90,7 +107,12 @@ public class CTF extends Gamemode {
 				t.setColor(p);
 			}
 		}
-		goal = main.random.nextInt(5) + 1;
+		try {
+			loadProperties();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		goal = mingoal + (int)(RANDOM.nextInt() * ((maxgoal - mingoal) + 1));
 		running = true;
 		Thread run = new Checker();
 		run.start();
@@ -112,6 +134,28 @@ public class CTF extends Gamemode {
 				p.sendMessage("You are on the " + t.name);
 			}
 		}
+	}
+	private void loadProperties() throws IOException {
+		FileUtils.CreateIfNotExist("properties/ctf.properties");
+		Properties prop = new Properties();
+		FileInputStream in = new FileInputStream("properties/ctf.properties");
+		prop.load(in);
+		in.close();
+		this.mingoal = Integer.parseInt(prop.getProperty("Min_Goal_Requirement", "1"));
+		this.maxgoal = Integer.parseInt(prop.getProperty("Max_Goal_Requirement", "5"));
+		this.maxexpcap = Integer.parseInt(prop.getProperty("Max_EXP_onCapture", "0"));
+		this.maxexpdrop = Integer.parseInt(prop.getProperty("Max_EXP-Lose_onDrop", "0"));
+		this.maxexpwin = Integer.parseInt(prop.getProperty("Max_EXP_onWin", "50"));
+		this.maxgpcap = Integer.parseInt(prop.getProperty("Max_GP_onCapture", "1"));
+		this.maxgpdrop = Integer.parseInt(prop.getProperty("Max_GP-Lose_onDrop", "0"));
+		this.maxgpwin = Integer.parseInt(prop.getProperty("Max_GP_onWin", "10"));
+		this.maxexplosetag = Integer.parseInt(prop.getProperty("Max_EXP-Lose_onTagged", "0"));
+		this.maxexptag = Integer.parseInt(prop.getProperty("Max_EXP_onTag", "0"));
+		this.maxgptag = Integer.parseInt(prop.getProperty("Max_EXP_onTag", "2"));
+		this.maxgplosetag = Integer.parseInt(prop.getProperty("Max_EXP-Lose_onTagged", "0"));
+		FileOutputStream out = new FileOutputStream("properties/ctf.properties");
+		prop.store(out, "These are the reward settings for the CTF Gamemode.");
+		out.close();
 	}
 	public void resetClients() {
 		for (Player p : main.INSTANCE.getServer().players) {
@@ -158,7 +202,10 @@ public class CTF extends Gamemode {
 			return;
 		getTeam(tagged).spawnPlayer(tagged); //Spawn the person who got tagged
 		//Reward the tagger
-		rewardPlayer(tagger, 2);
+		addEXP(tagger, RANDOM.nextInt(this.maxexptag));
+		addEXP(tagged, RANDOM.nextInt(this.maxexplosetag) * -1);
+		rewardPlayer(tagger, RANDOM.nextInt(this.maxgptag));
+		rewardPlayer(tagged, RANDOM.nextInt(this.maxgplosetag) * -1);
 		try {
 			tagger.saveValue("points");
 		} catch (SQLException e) {
@@ -292,8 +339,8 @@ public class CTF extends Gamemode {
 		main.GlobalMessage(ChatColor.Dark_Green + "The game is over!");
 		main.GlobalMessage("The " + getWinner().name + ChatColor.White + " has won this round!");
 		for (Player p : getWinner().members) {
-			rewardPlayer(p, 10);
-			this.addEXP(p, 50 * teams.size());
+			rewardPlayer(p, RANDOM.nextInt(this.maxgpwin));
+			this.addEXP(p, RANDOM.nextInt(this.maxexpwin) * teams.size());
 		}
 		for (Team t : teams) { 
 			t.points = 0;
@@ -421,5 +468,15 @@ public class CTF extends Gamemode {
 				}
 			}
 		}
+	}
+
+	public void rewardCap(Player player) {
+		addEXP(player, RANDOM.nextInt(this.maxexpcap));
+		rewardPlayer(player, RANDOM.nextInt(this.maxgpcap));
+	}
+	
+	public void punishDrop(Player player) {
+		addEXP(player, RANDOM.nextInt(this.maxexpdrop) * -1);
+		rewardPlayer(player, RANDOM.nextInt(this.maxgpdrop) * -1);
 	}
 }

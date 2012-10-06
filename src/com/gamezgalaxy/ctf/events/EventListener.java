@@ -155,6 +155,7 @@ public class EventListener implements Listener {
 					Player.GlobalBlockChange((short)x, (short)(y + 3), (short)z, Block.getBlock("Air"), event.getPlayer().getLevel(), event.getPlayer().getServer());
 					t.points++;
 					ctf.addCapture(event.getPlayer());
+					ctf.rewardCap(event.getPlayer());
 					ctf.resetFlag(ctf.holders.get(event.getPlayer()));
 					ctf.holders.remove(event.getPlayer());
 					main.GlobalMessage(ChatColor.Orange + "Current Score:");

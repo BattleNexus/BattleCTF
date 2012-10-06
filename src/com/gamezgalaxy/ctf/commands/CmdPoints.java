@@ -62,6 +62,7 @@ public class CmdPoints extends PlayerCommand {
 		player.sendMessage("Flag Captures: " + caps);
 		player.sendMessage("Flag Drops: " + drops);
 		player.sendMessage("Flag Ratio: " + rate);
+		player.sendMessage("Current Rank: " + stats.getGroup().name);
 		if (team != null)
 			player.sendMessage("Team: " + team.name);
 		player.sendMessage("&eLevel :: &a" + level + "    &eEXP :: &a" + exp + "/" + required);

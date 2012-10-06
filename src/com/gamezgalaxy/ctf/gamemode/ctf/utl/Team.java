@@ -45,6 +45,7 @@ public class Team {
 				main.GlobalMessage(p.username + ChatColor.Dark_Red + " DROPPED THE FLAG!");
 				main.INSTANCE.getEvents().drop(p, c.holders.get(p).flagblock);
 				c.holders.remove(p);
+				c.punishDrop(p);
 				c.addDrop(p);
 			}
 		}

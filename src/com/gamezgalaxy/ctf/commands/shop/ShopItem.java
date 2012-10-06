@@ -88,8 +88,8 @@ public abstract class ShopItem extends PlayerCommand {
 		}
 		if (run(p, args)) {
 			ctf.setValue(p, "points", points - getPrice(), false);
-			p.sendMessage(ChatColor.White + "" + getPrice() + ChatColor.Bright_Green +  "GP's " + ChatColor.White + "have been taken from your account!");
-			p.sendMessage("Thank you for using the shop!");
+			p.sendMessage(ChatColor.White + "" + getPrice() + ChatColor.Bright_Green +  "GP's " + ChatColor.White + "have been removed from your saving!");
+			p.sendMessage("&3Transaction complete! Thank you for your purchase.");
 		}
 	}
 }
