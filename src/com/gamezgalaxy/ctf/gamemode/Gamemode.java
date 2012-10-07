@@ -40,8 +40,14 @@ public abstract class Gamemode {
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_DAT_BACKUP_PATH).exists()) {
 			getMain().getServer().Log("Converting .dat..");
-			Level l = Level.Convert(CONVERT_DAT_BACKUP_PATH);
-			new File(CONVERT_DAT_BACKUP_PATH).delete();
+			Level l = Level.convertDAT(CONVERT_DAT_BACKUP_PATH);
+			l.Save();
+			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
+			getMain().getServer().Log("Done!");
+		}
+		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_BACKUP_PATH).exists()) {
+			getMain().getServer().Log("Converting .lvl...");
+			Level l = Level.convertLVL(CONVERT_BACKUP_PATH);
 			l.Save();
 			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
 			getMain().getServer().Log("Done!");
