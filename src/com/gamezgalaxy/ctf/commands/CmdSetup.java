@@ -72,15 +72,14 @@ public class CmdSetup extends PlayerCommand {
 					p.sendMessage("Break the flag for " + CTF.TEAM_NAMES[i]);
 					b = bb.waitForResponse();
 					config.add("flag." + CTF.SYSTEM_TEAM_NAME[i] + ".x = " + b.getX());
-					config.add("flag." + CTF.SYSTEM_TEAM_NAME[i] + ".z = " + b.getY());
-					config.add("flag." + CTF.SYSTEM_TEAM_NAME[i] + ".y = " + b.getZ());
+					config.add("flag." + CTF.SYSTEM_TEAM_NAME[i] + ".y = " + b.getY());
+					config.add("flag." + CTF.SYSTEM_TEAM_NAME[i] + ".z = " + b.getZ());
 					config.add("block." + CTF.SYSTEM_TEAM_NAME[i] + " = " + CTF.DEFAULT_FLAGS[i]);
-					System.out.println("Added for " + CTF.SYSTEM_TEAM_NAME[i]);
 					b = null;
 					bb = null;
 					Thread.sleep(100);
 				}
-				System.out.println("Done");
+				p.clearChatScreen();
 				/**
 				 * AREA CONFIG
 				 */
@@ -121,11 +120,12 @@ public class CmdSetup extends PlayerCommand {
 						config.add("area." + CTF.SYSTEM_TEAM_NAME[z] + "." + ii + ".bigx = " + Math.max(X1, X2));
 						config.add("area." + CTF.SYSTEM_TEAM_NAME[z] + "." + ii + ".bigz = " + Math.max(Z1, Z2));
 						p.sendMessage("Area configed!");
-						p.sendMessage("Does blue team own another area?");
+						p.sendMessage("Does " + CTF.TEAM_NAMES[z] + ChatColor.White + " own another area?");
 						ii++;
 						a = new ChatAction();
 						a.setPlayer(p);
 						c = a.waitForResponse();
+						p.clearChatScreen();
 						if (c.getMessage().equalsIgnoreCase("yes")) {
 							p.sendMessage("Ok! Lets config that one!");
 							continue;
@@ -188,14 +188,16 @@ public class CmdSetup extends PlayerCommand {
 					}
 					config.add("safezone." + CTF.SYSTEM_TEAM_NAME[x] + ".smallz = " + bZ);
 					bZ = p.getBlockZ();
+					p.clearChatScreen();
 				}
 				p.sendMessage("Adding gamemodes..");
-				config.add("core.gamemode = com.gamezgalaxy.ctf.gamemode.CTF");
+				config.add("core.gamemode = com.gamezgalaxy.ctf.gamemode.ctf.CTF");
+				config.add("stalemate.action = com.gamezgalaxy.ctf.gamemode.ctf.stalemate.actions.DropFlags");
 				p.sendMessage("Making levels..");
-				if (!new File("ctf/" + ConfigGraber.getMapmax("config/")).exists())
-					new File("ctf/" + ConfigGraber.getMapmax("config/")).mkdirs();
-				if (!new File("ctf2/" + ConfigGraber.getMapmax("config/")).exists())
-					new File("ctf2/" + ConfigGraber.getMapmax("config/")).mkdirs();
+				if (!new File("backups/ctf/" + ConfigGraber.getMapmax("config/")).exists())
+					new File("backups/ctf/" + ConfigGraber.getMapmax("config/")).mkdirs();
+				if (!new File("backups/ctf2/" + ConfigGraber.getMapmax("config/")).exists())
+					new File("backups/ctf2/" + ConfigGraber.getMapmax("config/")).mkdirs();
 				ConfigGraber.copyfile("levels/" + p.getLevel().name + ".ggs", "ctf/" + ConfigGraber.getMapmax("config/") + "/ctf.ggs");
 				ConfigGraber.copyfile("levels/" + p.getLevel().name + ".ggs", "ctf2/" + ConfigGraber.getMapmax("config/") + "/ctf2.ggs");
 				p.sendMessage("Bumping..");

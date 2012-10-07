@@ -7,9 +7,11 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.gamemode.ctf;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,6 +64,34 @@ public class CTF extends Gamemode {
 		"com.gamezgalaxy.GGS.world.blocks.GoldBlock",
 		"com.gamezgalaxy.GGS.world.blocks.Orange"
 	};
+	private static final String DEFFAULT_PROPERTIES =
+	"#These are the reward settings for the CTF Gamemode.\n" +
+	"#The minium number of goals that are required per round\n" +
+	"Min_Goal_Requirement = 1\n"  +
+	"#The max number of goals that are required per round\n" +
+	"Max_Goal_Requirement = 5\n" +
+	"#The max number of EXP a player gets on flag capture\n" +
+	"Max_EXP_onCapture = 0\n" +
+	"#The max number of EXP a player loses when he drops the flag\n" +
+	"Max_EXP-Lose_onDrop = 0\n" +
+	"#The max number of EXP on a round won\n" +
+	"Max_EXP_onWin = 50\n" +
+	"#The max number of GP's a player gets on flag capture\n" +
+	"Max_GP_onCapture = 1\n" +
+	"#The max number of GP's a player loses when a flag is dropped\n" +
+	"Max_GP-Lose_onDrop = 0\n" +
+	"#The max number of GP's a player gets on a round won\n" +
+	"Max_GP_onWin = 10\n" +
+	"#The max number of EXP a player loses when tagged\n" +
+	"Max_EXP-Lose_onTagged = 0\n" +
+	"#The max number of EXP a player gets when tagging someone\n" +
+	"Max_EXP_onTag = 5\n" +
+	"#The max number of GP's a player gets when tagging someone\n" +
+	"Max_GP_onTag = 2\n" +
+	"#The max number of GP's a player loses when tagged\n" +
+	"Max_GP-Lose_onTagged = 0\n" +
+	"#The number of maps to put into voting at the end of a round\n" +
+	"Vote_Count = 3\n";
 	public ArrayList<Team> teams = new ArrayList<Team>();
 	public HashMap<Player, Team> holders = new HashMap<Player, Team>();
 	public HashMap<Player, HashMap<Player, Integer>> dominate = new HashMap<Player, HashMap<Player, Integer>>();
@@ -109,6 +139,8 @@ public class CTF extends Gamemode {
 			}
 		}
 		try {
+			if (!new File("properties/ctf.properties").exists())
+				createDefaults();
 			loadProperties();
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -136,8 +168,14 @@ public class CTF extends Gamemode {
 			}
 		}
 	}
-	private void loadProperties() throws IOException {
+	private void createDefaults() throws IOException {
 		FileUtils.CreateIfNotExist("properties/ctf.properties");
+		File f = new File("properties/ctf.properties");
+		PrintStream psw = new PrintStream(f);
+		psw.print(DEFFAULT_PROPERTIES);
+		psw.close();
+	}
+	private void loadProperties() throws IOException {
 		Properties prop = new Properties();
 		FileInputStream in = new FileInputStream("properties/ctf.properties");
 		prop.load(in);
@@ -152,9 +190,9 @@ public class CTF extends Gamemode {
 		this.maxgpwin = Integer.parseInt(prop.getProperty("Max_GP_onWin", "10"));
 		this.maxexplosetag = Integer.parseInt(prop.getProperty("Max_EXP-Lose_onTagged", "0"));
 		this.maxexptag = Integer.parseInt(prop.getProperty("Max_EXP_onTag", "0"));
-		this.maxgptag = Integer.parseInt(prop.getProperty("Max_EXP_onTag", "2"));
-		this.maxgplosetag = Integer.parseInt(prop.getProperty("Max_EXP-Lose_onTagged", "0"));
-		this.votecount = Integer.parseInt(prop.getProperty("Map_Vote_Count", "3"));
+		this.maxgptag = Integer.parseInt(prop.getProperty("Max_GP_onTag", "2"));
+		this.maxgplosetag = Integer.parseInt(prop.getProperty("Max_GP-Lose_onTagged", "0"));
+		this.votecount = Integer.parseInt(prop.getProperty("Vote_Count", "3"));
 		FileOutputStream out = new FileOutputStream("properties/ctf.properties");
 		prop.store(out, "These are the reward settings for the CTF Gamemode.");
 		out.close();

@@ -52,6 +52,8 @@ public class Voter implements Listener {
 					finals = "";
 				}
 			}
+			if (!finals.equals(""))
+				lines.add(finals);
 			cache = lines.toArray(new String[lines.size()]);
 		}
 		return cache;
@@ -60,7 +62,7 @@ public class Voter implements Listener {
 	private void sendGlobalVoteMessage() {
 		String[] lines = generateLines();
 		main.GlobalMessage(ChatColor.Yellow + "------------------------------------------------------------");
-		main.GlobalMessage(ChatColor.Dark_Green + "Time to vote! (Type the number/name of the map you want!");
+		main.GlobalMessage(ChatColor.Dark_Green + "Time to vote! (Type the number/name of the map you want!)");
 		for (String line : lines) {
 			main.GlobalMessage(line);
 		}
@@ -69,7 +71,7 @@ public class Voter implements Listener {
 	
 	private void sendMapMessage(Player p) {
 		String[] lines = generateLines();
-		p.sendMessage(ChatColor.Dark_Green + "Time to vote! (Type the number/name of the map you want!");
+		p.sendMessage(ChatColor.Dark_Green + "Time to vote! (Type the number/name of the map you want!)");
 		for (String line : lines) {
 			p.sendMessage(line);
 		}
