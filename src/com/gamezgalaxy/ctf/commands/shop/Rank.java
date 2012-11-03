@@ -1,12 +1,14 @@
 package com.gamezgalaxy.ctf.commands.shop;
 
-import com.gamezgalaxy.GGS.API.CommandExecutor;
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.groups.Group;
-import com.gamezgalaxy.GGS.iomodel.Player;
+import net.mcforge.API.CommandExecutor;
+import net.mcforge.API.ManualLoad;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.groups.Group;
+import net.mcforge.iomodel.Player;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.main.main;
 
+@ManualLoad
 public class Rank extends ShopItem {
 
 	@Override
@@ -49,6 +51,7 @@ public class Rank extends ShopItem {
 
 	@Override
 	public void help(CommandExecutor executor) {
+		executor.sendMessage("/rank - Rank up.");
 	}
 
 }

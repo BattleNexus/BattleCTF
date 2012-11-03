@@ -1,9 +1,9 @@
 package com.gamezgalaxy.ctf.events;
 
-import com.gamezgalaxy.GGS.API.Cancelable;
-import com.gamezgalaxy.GGS.API.EventList;
-import com.gamezgalaxy.GGS.API.player.PlayerEvent;
-import com.gamezgalaxy.GGS.iomodel.Player;
+import net.mcforge.API.Cancelable;
+import net.mcforge.API.EventList;
+import net.mcforge.API.player.PlayerEvent;
+import net.mcforge.iomodel.Player;
 
 public abstract class PlayerDeathEvent<T> extends PlayerEvent implements Cancelable {
 
@@ -36,7 +36,7 @@ public abstract class PlayerDeathEvent<T> extends PlayerEvent implements Cancela
 	}
 
 	@Override
-	public void Cancel(boolean cancel) {
+	public void setCancel(boolean cancel) {
 		this._cancel = cancel;
 	}
 	

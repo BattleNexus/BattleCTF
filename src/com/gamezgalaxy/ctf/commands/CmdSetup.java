@@ -3,16 +3,18 @@ package com.gamezgalaxy.ctf.commands;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.gamezgalaxy.GGS.API.CommandExecutor;
-import com.gamezgalaxy.GGS.API.action.Action;
-import com.gamezgalaxy.GGS.API.action.BlockChangeAction;
-import com.gamezgalaxy.GGS.API.action.ChatAction;
-import com.gamezgalaxy.GGS.API.plugin.PlayerCommand;
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
+import net.mcforge.API.CommandExecutor;
+import net.mcforge.API.ManualLoad;
+import net.mcforge.API.action.Action;
+import net.mcforge.API.action.BlockChangeAction;
+import net.mcforge.API.action.ChatAction;
+import net.mcforge.API.plugin.PlayerCommand;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.map.utl.ConfigGraber;
 
+@ManualLoad
 public class CmdSetup extends PlayerCommand {
 
 	@Override
@@ -35,8 +37,9 @@ public class CmdSetup extends PlayerCommand {
 		return "setup";
 	}
 
+
 	@Override
-	public boolean isOpCommand() {
+	public boolean isOpCommandDefault() {
 		return true;
 	}
 

@@ -2,16 +2,18 @@ package com.gamezgalaxy.ctf.commands.shop;
 
 import java.util.ArrayList;
 
-import com.gamezgalaxy.GGS.API.CommandExecutor;
-import com.gamezgalaxy.GGS.API.EventHandler;
-import com.gamezgalaxy.GGS.API.Listener;
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
+import net.mcforge.API.CommandExecutor;
+import net.mcforge.API.EventHandler;
+import net.mcforge.API.Listener;
+import net.mcforge.API.ManualLoad;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
 import com.gamezgalaxy.ctf.events.PlayerTaggedEvent;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
 import com.gamezgalaxy.ctf.main.main;
 
+@ManualLoad
 public class Cloak extends ShopItem implements Listener {
 
 	private boolean started = false;
@@ -106,8 +108,7 @@ public class Cloak extends ShopItem implements Listener {
 
 	@Override
 	public void help(CommandExecutor executor) {
-		// TODO Auto-generated method stub
-		
+		executor.sendMessage("Makes you invisable to the other teams.");
 	}
 
 }

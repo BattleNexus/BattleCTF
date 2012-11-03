@@ -1,6 +1,6 @@
 package com.gamezgalaxy.ctf.gamemode.ctf.stalemate.actions;
 
-import com.gamezgalaxy.GGS.chat.ChatColor;
+import net.mcforge.chat.ChatColor;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.stalemate.Action;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;

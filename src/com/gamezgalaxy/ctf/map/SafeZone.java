@@ -7,7 +7,7 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.map;
 
-import com.gamezgalaxy.GGS.iomodel.Player;
+import net.mcforge.iomodel.Player;
 
 public class SafeZone {
 	private int smallx;

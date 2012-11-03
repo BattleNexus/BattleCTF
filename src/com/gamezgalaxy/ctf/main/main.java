@@ -15,17 +15,20 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.gamezgalaxy.GGS.API.plugin.Game;
-import com.gamezgalaxy.GGS.chat.Messages;
-import com.gamezgalaxy.GGS.iomodel.Player;
-import com.gamezgalaxy.GGS.server.Server;
+import net.mcforge.API.plugin.Game;
+import net.mcforge.chat.Messages;
+import net.mcforge.iomodel.Player;
+import net.mcforge.server.Server;
+import net.mcforge.system.updater.Updatable;
+import net.mcforge.system.updater.UpdateType;
+
 import com.gamezgalaxy.ctf.commands.*;
 import com.gamezgalaxy.ctf.commands.shop.Shop;
 import com.gamezgalaxy.ctf.events.EventListener;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.map.Map;
 
-public class main extends Game {
+public class main extends Game implements Updatable {
 
 	Messages globalchat;
 	int tick = 30000;
@@ -181,6 +184,35 @@ public class main extends Game {
 				m = null;
 			}
 		}
+	}
+	@Override
+	public String getCheckURL() {
+		return "http://www.gamezgalaxy.com/assets/ctf/version.txt";
+	}
+
+	@Override
+	public String getCurrentVersion() {
+		return "1.0.0";
+	}
+
+	@Override
+	public String getDownloadPath() {
+		return "plugins/CTF.jar";
+	}
+
+	@Override
+	public String getDownloadURL() {
+		return "http://www.gamezgalaxy.com/assets/ctf/CTF.jar";
+	}
+
+	@Override
+	public UpdateType getUpdateType() {
+		return UpdateType.Auto_Notify_Restart;
+	}
+
+	@Override
+	public void unload() {
+		getServer().getPluginHandler().unload(this);
 	}
 
 }

@@ -10,18 +10,18 @@ package com.gamezgalaxy.ctf.events;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.gamezgalaxy.GGS.API.EventHandler;
-import com.gamezgalaxy.GGS.API.Listener;
-import com.gamezgalaxy.GGS.API.level.AllLevelLoadedEvent;
-import com.gamezgalaxy.GGS.API.level.PlayerJoinedLevel;
-import com.gamezgalaxy.GGS.API.player.PlayerBlockChangeEvent;
-import com.gamezgalaxy.GGS.API.player.PlayerCommandEvent;
-import com.gamezgalaxy.GGS.API.player.PlayerDisconnectEvent;
-import com.gamezgalaxy.GGS.API.player.PlayerMoveEvent;
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
-import com.gamezgalaxy.GGS.world.Block;
-import com.gamezgalaxy.GGS.world.PlaceMode;
+import net.mcforge.API.EventHandler;
+import net.mcforge.API.Listener;
+import net.mcforge.API.level.PlayerJoinedLevel;
+import net.mcforge.API.player.PlayerBlockChangeEvent;
+import net.mcforge.API.player.PlayerCommandEvent;
+import net.mcforge.API.player.PlayerDisconnectEvent;
+import net.mcforge.API.player.PlayerMoveEvent;
+import net.mcforge.API.server.ServerStartedEvent;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
+import net.mcforge.world.Block;
+import net.mcforge.world.PlaceMode;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
 import com.gamezgalaxy.ctf.commands.shop.ShopItem;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
@@ -92,11 +92,11 @@ public class EventListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onAllLoad(AllLevelLoadedEvent event) {
-		if (event.getLevelHandler().findLevel("ctf") != null)
-			event.getLevelHandler().unloadLevel(event.getLevelHandler().findLevel("ctf"), false);
-		if (event.getLevelHandler().findLevel("ctf2") != null)
-			event.getLevelHandler().unloadLevel(event.getLevelHandler().findLevel("ctf2"), false);
+	public void onAllLoad(ServerStartedEvent event) {
+		if (event.getServer().getLevelHandler().findLevel("ctf") != null)
+			event.getServer().getLevelHandler().unloadLevel(event.getServer().getLevelHandler().findLevel("ctf"), false);
+		if (event.getServer().getLevelHandler().findLevel("ctf2") != null)
+			event.getServer().getLevelHandler().unloadLevel(event.getServer().getLevelHandler().findLevel("ctf2"), false);
 		main.INSTANCE.start();
 	}
 	
@@ -108,7 +108,7 @@ public class EventListener implements Listener {
 		if (event.getPlayer().getLevel() != ctf.getMap().level)
 			return;
 		if (ctf.isOnNoTeam(event.getPlayer())) {
-			event.Cancel(true);
+			event.setCancel(true);
 			event.getPlayer().sendMessage("&2[GBot] You are spectating!");
 			event.getPlayer().sendMessage("&2[GBot] Please join one of the follow teams:");
 			for (int i = 0; i < ctf.teamcount; i++)
@@ -149,15 +149,15 @@ public class EventListener implements Listener {
 				}
 				else if (t.flagx == X && t.flagy == Y && t.flagz == Z && t != team && holding && event.getPlayer().getLevel().getTile(X, Y, Z) == t.flagblock) {
 					event.getPlayer().sendMessage("&2[Gbot] You can only hold 1 flag at a time!");
-					event.Cancel(true);
+					event.setCancel(true);
 				}
 				else if (t.flagx == X && t.flagy == Y && t.flagz == Z && t == team && !holding && event.getPlayer().getLevel().getTile(X, Y, Z) == t.flagblock) {
 					event.getPlayer().sendMessage("&2[Gbot] You cant take your own flag!");
-					event.Cancel(true);
+					event.setCancel(true);
 				}
 				else if (t.flagx == X && t.flagy == Y && t.flagz == Z && t == team && holding && event.getPlayer().getLevel().getTile(X, Y, Z) == t.flagblock) {
 					main.GlobalMessage(event.getPlayer().username + " returned the flag!");
-					event.Cancel(true);
+					event.setCancel(true);
 					Integer[] temp = flagfloat.get(event.getPlayer());
 					flagfloat.remove(event.getPlayer());
 					int x = temp[0].intValue();
@@ -185,14 +185,14 @@ public class EventListener implements Listener {
 				event.getPlayer().sendMessage(ChatColor.Aqua + " Place " + ChatColor.Red + "\"Brick\" " + ChatColor.Aqua + "to detonate the TNT");
 			}
 			else if (event.getBlock().getVisableBlock() == 46 && ctf.tntholders.containsKey(event.getPlayer()))
-				event.Cancel(true);
+				event.setCancel(true);
 			else if (event.getBlock().getVisableBlock() == 45 && ctf.tntholders.containsKey(event.getPlayer())) {
 				if (!event.getLevel().getTile(ctf.tntholders.get(event.getPlayer()).getX(), ctf.tntholders.get(event.getPlayer()).getY(), ctf.tntholders.get(event.getPlayer()).getZ()).name.equals("TNTEXE"))
 					ctf.tntholders.remove(event.getPlayer());
 				else {
 					TNT_Explode t = (TNT_Explode)event.getLevel().getTile(ctf.tntholders.get(event.getPlayer()).getX(), ctf.tntholders.get(event.getPlayer()).getY(), ctf.tntholders.get(event.getPlayer()).getZ());
 					t.explode();
-					event.Cancel(true);
+					event.setCancel(true);
 				}
 			}
 		}
@@ -224,7 +224,7 @@ public class EventListener implements Listener {
 					if (getBiggest() == t) {
 						event.getPlayer().sendMessage("&2[GBot] " + t.name + " &2is full!");
 						event.getPlayer().sendMessage("&2[GBot] Please join /" + getSmallest().system_name);
-						event.Cancel(true);
+						event.setCancel(true);
 						break;
 					}
 					t.members.add(event.getPlayer());
@@ -232,7 +232,7 @@ public class EventListener implements Listener {
 					//Spawn the player
 					t.spawnPlayer(event.getPlayer());
 					t.setColor(event.getPlayer());
-					event.Cancel(true);
+					event.setCancel(true);
 					break;
 				}
 			}
@@ -243,14 +243,14 @@ public class EventListener implements Listener {
 					if (item.getName().equalsIgnoreCase(event.getCommand())) {
 						String[] args = new String[event.getArgs().size()];
 						item.execute(event.getPlayer(), event.getArgs().toArray(args));
-						event.Cancel(true);
+						event.setCancel(true);
 					}
 				}
 			}
 			if (event.getCommand().equalsIgnoreCase("spawn")) {
 				Team t = ctf.getTeam(event.getPlayer());
 				t.spawnPlayer(event.getPlayer());
-				event.Cancel(true);
+				event.setCancel(true);
 			}
 		}
 	}

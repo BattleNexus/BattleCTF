@@ -2,11 +2,13 @@ package com.gamezgalaxy.ctf.commands.shop;
 
 import java.util.ArrayList;
 
-import com.gamezgalaxy.GGS.API.CommandExecutor;
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
-import com.gamezgalaxy.GGS.world.Block;
+import net.mcforge.API.CommandExecutor;
+import net.mcforge.API.ManualLoad;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
+import net.mcforge.world.Block;
 
+@ManualLoad
 public class JetPack extends ShopItem {
 
 	@Override
@@ -129,7 +131,6 @@ public class JetPack extends ShopItem {
 	}
 	@Override
 	public void help(CommandExecutor executor) {
-		// TODO Auto-generated method stub
-		
+		executor.sendMessage("/jetpack - Fly for a limited time.");
 	}
 }

@@ -17,8 +17,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-import com.gamezgalaxy.GGS.world.Block;
-import com.gamezgalaxy.GGS.world.Level;
+import net.mcforge.world.Block;
+import net.mcforge.world.Level;
 import com.gamezgalaxy.ctf.exceptions.InvalidConfigException;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;

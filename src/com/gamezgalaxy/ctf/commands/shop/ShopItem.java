@@ -1,8 +1,8 @@
 package com.gamezgalaxy.ctf.commands.shop;
 
-import com.gamezgalaxy.GGS.API.plugin.PlayerCommand;
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
+import net.mcforge.API.plugin.PlayerCommand;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.main.main;
 
@@ -69,7 +69,7 @@ public abstract class ShopItem extends PlayerCommand {
 	}
 
 	@Override
-	public boolean isOpCommand() {
+	public boolean isOpCommandDefault() {
 		return false;
 	}
 

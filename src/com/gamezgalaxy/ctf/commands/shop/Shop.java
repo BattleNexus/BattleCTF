@@ -10,7 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-import com.gamezgalaxy.GGS.util.FileUtils;
+import net.mcforge.util.FileUtils;
 import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.utl.JarLoader;
 
@@ -23,7 +23,7 @@ public class Shop {
 	public void Load() {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
-			FileUtils.CreateIfNotExist(FileUtils.PROPS_DIR, "shop.xml", DEFAULT_XML);
+			FileUtils.createIfNotExist(FileUtils.PROPS_DIR, "shop.xml", DEFAULT_XML);
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			org.w3c.dom.Document dom = db.parse(FileUtils.PROPS_DIR + "shop.xml");
 			Element elm = dom.getDocumentElement();

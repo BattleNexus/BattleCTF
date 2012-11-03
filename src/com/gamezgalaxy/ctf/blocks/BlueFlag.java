@@ -7,7 +7,7 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.blocks;
 
-import com.gamezgalaxy.GGS.world.blocks.Blue;
+import net.mcforge.world.blocks.Blue;
 
 public class BlueFlag extends Blue {
 

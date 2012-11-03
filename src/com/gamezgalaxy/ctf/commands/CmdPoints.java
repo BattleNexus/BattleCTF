@@ -1,13 +1,15 @@
 package com.gamezgalaxy.ctf.commands;
 
-import com.gamezgalaxy.GGS.API.CommandExecutor;
-import com.gamezgalaxy.GGS.API.plugin.PlayerCommand;
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
+import net.mcforge.API.CommandExecutor;
+import net.mcforge.API.ManualLoad;
+import net.mcforge.API.plugin.PlayerCommand;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
 import com.gamezgalaxy.ctf.main.main;
 
+@ManualLoad
 public class CmdPoints extends PlayerCommand {
 
 	@Override
@@ -20,8 +22,9 @@ public class CmdPoints extends PlayerCommand {
 		return "stats";
 	}
 
+
 	@Override
-	public boolean isOpCommand() {
+	public boolean isOpCommandDefault() {
 		return false;
 	}
 

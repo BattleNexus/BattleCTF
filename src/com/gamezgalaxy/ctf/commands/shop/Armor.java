@@ -1,14 +1,16 @@
 package com.gamezgalaxy.ctf.commands.shop;
 
-import com.gamezgalaxy.GGS.API.CommandExecutor;
-import com.gamezgalaxy.GGS.API.EventHandler;
-import com.gamezgalaxy.GGS.API.Listener;
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
+import net.mcforge.API.CommandExecutor;
+import net.mcforge.API.EventHandler;
+import net.mcforge.API.Listener;
+import net.mcforge.API.ManualLoad;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
 import com.gamezgalaxy.ctf.events.PlayerDeathEvent;
 import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.gamemode.ctf.*;
 
+@ManualLoad
 public class Armor extends ShopItem {
 
 	@Override
@@ -57,7 +59,7 @@ public class Armor extends ShopItem {
 		public void event(PlayerDeathEvent<?> event) {
 			if (event.getPlayer() == player) {
 				power--;
-				event.Cancel(true);
+				event.setCancel(true);
 				if (power <= 0) {
 					player.sendMessage(ChatColor.Dark_Red + "Your armmor has ran out!");
 					PlayerDeathEvent.getEventList().unregister(this);
@@ -73,7 +75,6 @@ public class Armor extends ShopItem {
 
 	@Override
 	public void help(CommandExecutor executor) {
-		// TODO Auto-generated method stub
-		
+		executor.sendMessage("/armor - Makes you invincible to TNT for a certain amount of time.");
 	}
 }

@@ -9,10 +9,10 @@ package com.gamezgalaxy.ctf.gamemode.ctf.utl;
 
 import java.util.ArrayList;
 
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.chat.ColorFormatException;
-import com.gamezgalaxy.GGS.iomodel.Player;
-import com.gamezgalaxy.GGS.world.Block;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.chat.ColorFormatException;
+import net.mcforge.iomodel.Player;
+import net.mcforge.world.Block;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.SafeZone;

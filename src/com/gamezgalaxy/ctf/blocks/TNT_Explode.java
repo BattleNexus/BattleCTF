@@ -3,11 +3,11 @@ package com.gamezgalaxy.ctf.blocks;
 import java.util.HashMap;
 import java.util.Random;
 
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
-import com.gamezgalaxy.GGS.server.Server;
-import com.gamezgalaxy.GGS.world.Block;
-import com.gamezgalaxy.GGS.world.PhysicsBlock;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
+import net.mcforge.server.Server;
+import net.mcforge.world.Block;
+import net.mcforge.world.PhysicsBlock;
 import com.gamezgalaxy.ctf.events.Killable;
 import com.gamezgalaxy.ctf.events.PlayerDeathByTNTEvent;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
@@ -21,6 +21,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 	 * 
 	 */
 	private static final long serialVersionUID = 9132287119137033841L;
+	String temp;
 	Player owner;
 	Server server;
 	public int wait = 400;
@@ -49,7 +50,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 	public PhysicsBlock clone(Server s) {
 		TNT_Explode te = new TNT_Explode(ID, name, s, owner);
 		te.wait = new Random().nextInt(40 - 5) + 5;
-		te.size = 2;
+		te.size = 1;
 		return te;
 	}
 
@@ -61,6 +62,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 		else
 			wait--;
 	}
+	
 	public void explode() {
 		if (exploding)
 			return;
@@ -125,15 +127,15 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 						cache.remove(loc);
 					}
 					
-					if (getLevel().getTile(xx, yy, zz).name.equals("TNTEXE") && xx != getX() && yy != getY() && zz != getZ()) {
+					if (getLevel().getTile(xx, yy, zz).name.equals("TNTEXE") && (xx != getX() || yy != getY() || zz != getZ())) {
 						TNT_Explode tnt = (TNT_Explode)getLevel().getTile(xx, yy, zz);
 						tnt.wait = 0;
 					}
 					else if (isInSafe(xx, yy, zz, (main.INSTANCE.getCurrentGame() instanceof CTF ? (CTF)main.INSTANCE.getCurrentGame() : null)) || isTeamFlag(getLevel().getTile(xx, yy, zz), (main.INSTANCE.getCurrentGame() instanceof CTF ? (CTF)main.INSTANCE.getCurrentGame() : null)))
 						continue;
-					else if (rand.nextInt(11) <= 8)
+					else if (rand.nextInt(11) <= 8 && (xx != getX() || yy != getY() || zz != getZ()))
 						Player.GlobalBlockChange((short)xx, (short)yy, (short)zz, Block.getBlock("Air"), getLevel(), server);
-					else if (rand.nextInt(11) <= 4)
+					else if (rand.nextInt(11) <= 4 && (xx != getX() || yy != getY() || zz != getZ()))
 						Player.GlobalBlockChange((short)xx, (short)yy, (short)zz, new Explosion((byte)10, "exe"), getLevel(), server);
 					
 				}
@@ -156,6 +158,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 				ctf.tntholders.remove(owner);
 			exploding = false;
 		}
+		Player.GlobalBlockChange((short)getX(), (short)getY(), (short)getZ(), Block.getBlock("Air"), getLevel(), server);
 	}
 	public boolean isInSafe(int x, int y, int z, CTF ctf) {
 		if (ctf == null || (x == getX() && y == getY() && z == getZ()))
@@ -205,5 +208,9 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 	@Override
 	public TNT_Explode getObject() {
 		return this;
+	}
+	@Override
+	public boolean initAtStart() {
+		return false;
 	}
 }

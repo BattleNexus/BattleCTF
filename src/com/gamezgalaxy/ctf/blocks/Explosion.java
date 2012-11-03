@@ -2,10 +2,10 @@ package com.gamezgalaxy.ctf.blocks;
 
 import java.util.Random;
 
-import com.gamezgalaxy.GGS.iomodel.Player;
-import com.gamezgalaxy.GGS.server.Server;
-import com.gamezgalaxy.GGS.world.Block;
-import com.gamezgalaxy.GGS.world.PhysicsBlock;
+import net.mcforge.iomodel.Player;
+import net.mcforge.server.Server;
+import net.mcforge.world.Block;
+import net.mcforge.world.PhysicsBlock;
 
 public class Explosion extends PhysicsBlock {
 
@@ -45,6 +45,10 @@ public class Explosion extends PhysicsBlock {
 	@Override
 	public byte getVisableBlock() {
 		return 10;
+	}
+	@Override
+	public boolean initAtStart() {
+		return false;
 	}
 
 }

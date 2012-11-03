@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.Random;
 
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
-import com.gamezgalaxy.GGS.util.FileUtils;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
+import net.mcforge.util.FileUtils;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
 import com.gamezgalaxy.ctf.commands.shop.ShopItem;
 import com.gamezgalaxy.ctf.events.PlayerTaggedEvent;
@@ -57,12 +57,12 @@ public class CTF extends Gamemode {
 	public static final String[] DEFAULT_FLAGS = new String[] {
 		"com.gamezgalaxy.ctf.blocks.BlueFlag",
 		"com.gamezgalaxy.ctf.blocks.RedFlag",
-		"com.gamezgalaxy.GGS.world.blocks.Green",
-		"com.gamezgalaxy.GGS.world.blocks.Purple",
-		"com.gamezgalaxy.GGS.world.blocks.Yellow",
-		"com.gamezgalaxy.GGS.world.blocks.IronBlock",
-		"com.gamezgalaxy.GGS.world.blocks.GoldBlock",
-		"com.gamezgalaxy.GGS.world.blocks.Orange"
+		"net.mcforge.world.blocks.Green",
+		"net.mcforge.world.blocks.Purple",
+		"net.mcforge.world.blocks.Yellow",
+		"net.mcforge.world.blocks.IronBlock",
+		"net.mcforge.world.blocks.GoldBlock",
+		"net.mcforge.world.blocks.Orange"
 	};
 	private static final String DEFFAULT_PROPERTIES =
 	"#These are the reward settings for the CTF Gamemode.\n" +
@@ -169,7 +169,7 @@ public class CTF extends Gamemode {
 		}
 	}
 	private void createDefaults() throws IOException {
-		FileUtils.CreateIfNotExist("properties/ctf.properties");
+		FileUtils.createIfNotExist("properties/ctf.properties");
 		File f = new File("properties/ctf.properties");
 		PrintStream psw = new PrintStream(f);
 		psw.print(DEFFAULT_PROPERTIES);
@@ -360,16 +360,8 @@ public class CTF extends Gamemode {
 	}
 	public int getValue(Player p, String setting) {
 		int points = 0;
-		try {
-			if (p.getValue(setting) != null)
-				points = p.getValue(setting);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		if (p.getValue(setting) != null)
+			points = p.getValue(setting);
 		return points;
 	}
 

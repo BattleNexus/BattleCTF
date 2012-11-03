@@ -1,7 +1,7 @@
 package com.gamezgalaxy.ctf.events;
 
-import com.gamezgalaxy.GGS.API.EventList;
-import com.gamezgalaxy.GGS.iomodel.Player;
+import net.mcforge.API.EventList;
+import net.mcforge.iomodel.Player;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
 
 public class PlayerDeathByTNTEvent extends PlayerDeathEvent<TNT_Explode> {

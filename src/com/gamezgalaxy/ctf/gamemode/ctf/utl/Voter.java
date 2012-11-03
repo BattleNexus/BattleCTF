@@ -3,13 +3,13 @@ package com.gamezgalaxy.ctf.gamemode.ctf.utl;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.gamezgalaxy.GGS.API.EventHandler;
-import com.gamezgalaxy.GGS.API.Priority;
-import com.gamezgalaxy.GGS.API.Listener;
-import com.gamezgalaxy.GGS.API.player.PlayerChatEvent;
-import com.gamezgalaxy.GGS.chat.ChatColor;
-import com.gamezgalaxy.GGS.iomodel.Player;
-import com.gamezgalaxy.GGS.server.Server;
+import net.mcforge.API.EventHandler;
+import net.mcforge.API.Priority;
+import net.mcforge.API.Listener;
+import net.mcforge.API.player.PlayerChatEvent;
+import net.mcforge.chat.ChatColor;
+import net.mcforge.iomodel.Player;
+import net.mcforge.server.Server;
 import com.gamezgalaxy.ctf.exceptions.VoteDidntStartException;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.main.main;
@@ -98,7 +98,7 @@ public class Voter implements Listener {
 	public void onchat(PlayerChatEvent event) {
 		if (voters.contains(event.getPlayer())) {
 			event.getPlayer().sendMessage(ChatColor.Dark_Red + "You already voted!");
-			event.Cancel(true);
+			event.setCancel(true);
 			return;
 		}
 		try {
@@ -107,7 +107,7 @@ public class Voter implements Listener {
 			if (index < 0 || index >= count) {
 				event.getPlayer().sendMessage(ChatColor.Dark_Red + "Invalid map!");
 				sendMapMessage(event.getPlayer());
-				event.Cancel(true);
+				event.setCancel(true);
 				return;
 			}
 			MapData d = maps.get(index);
@@ -120,7 +120,7 @@ public class Voter implements Listener {
 			if (md == null) {
 				event.getPlayer().sendMessage(ChatColor.Dark_Red + "Invalid map!");
 				sendMapMessage(event.getPlayer());
-				event.Cancel(true);
+				event.setCancel(true);
 				return;
 			}
 			md.votes++;
@@ -128,7 +128,7 @@ public class Voter implements Listener {
 			event.getPlayer().sendMessage(ChatColor.Bright_Green + "Thanks :D");
 		}
 		voters.add(event.getPlayer());
-		event.Cancel(true);
+		event.setCancel(true);
 	}
 	
 	public void end() throws VoteDidntStartException {

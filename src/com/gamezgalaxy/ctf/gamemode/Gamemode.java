@@ -9,8 +9,8 @@ package com.gamezgalaxy.ctf.gamemode;
 
 import java.io.File;
 
-import com.gamezgalaxy.GGS.API.plugin.Game;
-import com.gamezgalaxy.GGS.world.Level;
+import net.mcforge.API.plugin.Game;
+import net.mcforge.world.Level;
 import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.Map;
 import com.gamezgalaxy.ctf.map.utl.ConfigGraber;
@@ -41,14 +41,14 @@ public abstract class Gamemode {
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_DAT_BACKUP_PATH).exists()) {
 			getMain().getServer().Log("Converting .dat..");
 			Level l = Level.convertDAT(CONVERT_DAT_BACKUP_PATH);
-			l.Save();
+			l.save();
 			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
 			getMain().getServer().Log("Done!");
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_BACKUP_PATH).exists()) {
 			getMain().getServer().Log("Converting .lvl...");
 			Level l = Level.convertLVL(CONVERT_BACKUP_PATH);
-			l.Save();
+			l.save();
 			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
 			getMain().getServer().Log("Done!");
 		}
@@ -57,9 +57,9 @@ public abstract class Gamemode {
 		//Set main level
 		if (getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2")) == null)
 			throw new Exception("Error Restoring from backup.");
-		getMain().getServer().MainLevel = getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2"));
-		_map.level = getMain().getServer().MainLevel;
-		getMain().getServer().MainLevel.setAutoSave(false);
+		getMain().getServer().MainLevel = ctfmap ? "ctf" : "ctf2";
+		_map.level = getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2"));
+		getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2")).setAutoSave(false);
 		//Unload the current game level if one is loaded..
 		//We swap the in-line if statement to get which one is loaded, not which one will be
 		if (getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf2" : "ctf")) != null)
