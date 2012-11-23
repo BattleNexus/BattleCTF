@@ -5,14 +5,14 @@ CTF
 
 [gamezgalaxy.com][1]
 
-This is a plugin for the Classic Server Software [GGS][3]
+This is a capture the flag plugin for the Classic Server Software [MCForge][3]
 
 ##Issues and Pull requests
 - Found a bug? [Report it](https://github.com/GamezGalaxy/CTF/issues)
 - [Make a pull request](https://github.com/GamezGalaxy/CTF/pulls)
 
 ##Required Dependencies
-- [GGS][3]
+- [MCForge][3]
 
 ##Copyright/License
 
@@ -37,4 +37,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [1]: http://www.gamezgalaxy.com
 [2]: http://www.gnu.org/licenses/gpl-3.0.html
-[3]: https://github.com/GamezGalaxy/GGS
+[3]: https://github.com/MCForge/MCForge-Core
