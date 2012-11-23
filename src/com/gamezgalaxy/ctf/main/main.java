@@ -9,6 +9,7 @@ package com.gamezgalaxy.ctf.main;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -61,12 +62,11 @@ public class main extends Game implements Updatable {
 
 	@Override
 	public void onLoad(String[] arg0) {
+		if (new File("levels/ctf.ggs").exists())
+			new File("levels/ctf.ggs").delete();
+		if (new File("levels/ctf2.ggs").exists())
+			new File("levels/ctf2.ggs").delete();
 		INSTANCE = this;
-		try {
-			loadMaps();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		events = new EventListener();
 		getServer().getEventSystem().registerEvents(events);
 		_shop = new Shop();
@@ -81,6 +81,19 @@ public class main extends Game implements Updatable {
 	}
 	
 	public void start() {
+		if (running)
+			return;
+		try {
+			loadMaps();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if (maps.size() == 0) {
+			getServer().Log("[CTF] No maps found..");
+			getServer().Log("[CTF] Will start the round when one is added.");
+			getServer().Log("[CTF] Add a map using /setup !");
+			return;
+		}
 		run = new Gametick(this);
 		running = true;
 		run.start();

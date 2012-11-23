@@ -62,7 +62,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 		else
 			wait--;
 	}
-	
+
 	public void explode() {
 		if (exploding)
 			return;
@@ -93,57 +93,63 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 								p.setPos((short)(getLevel().spawnx * 32), (short)(getLevel().spawny * 32), (short)(getLevel().spawnz * 32));
 							else {
 								Team t = ctf.getTeam(p);
-								PlayerDeathByTNTEvent event = new PlayerDeathByTNTEvent(p, owner, this);
-								owner.getServer().getEventSystem().callEvent(event);
-								if (!event.isCancelled()) {
-									t.spawnPlayer(p);
-									if (ctf.getKillStreak(p) != 0) {
-										main.GlobalMessage(ChatColor.Dark_Red + this.owner.username + " ended " + p.username + " killstreak of " + ctf.getKillStreak(p));
-										ctf.setKillStreak(p, 0);
-										if (ctf.dominate.containsKey(p)) {
-											if (ctf.dominate.get(p).containsKey(owner)) {
-												ctf.dominate.get(p).remove(owner);
-												main.GlobalMessage(owner.username + " got " + ChatColor.Dark_Red + " REVENGE " + ChatColor.White + " on " + p.username);
+								if (t != ctf.getTeam(owner)) {
+									PlayerDeathByTNTEvent event = new PlayerDeathByTNTEvent(p, owner, this);
+									owner.getServer().getEventSystem().callEvent(event);
+									if (!event.isCancelled()) {
+										t.spawnPlayer(p);
+										if (ctf.getKillStreak(p) != 0) {
+											main.GlobalMessage(ChatColor.Dark_Red + this.owner.username + " ended " + p.username + " killstreak of " + ctf.getKillStreak(p));
+											ctf.setKillStreak(p, 0);
+											if (ctf.dominate.containsKey(p)) {
+												if (ctf.dominate.get(p).containsKey(owner)) {
+													ctf.dominate.get(p).remove(owner);
+													main.GlobalMessage(owner.username + " got " + ChatColor.Dark_Red + "REVENGE " + ChatColor.White + "on " + p.username);
+												}
 											}
 										}
+										main.GlobalMessage(this.owner.username + " &4EXPLODED&f " + p.username);
+										kills++;
+										if (!ctf.dominate.containsKey(owner))
+											ctf.dominate.put(owner, new HashMap<Player, Integer>());
+										if (ctf.dominate.get(owner).containsKey(p)) {
+											int temp = ctf.dominate.get(owner).get(p);
+											temp++;
+											ctf.dominate.get(owner).remove(p);
+											ctf.dominate.get(owner).put(p, temp);
+											if (temp % 4 == 0)
+												main.GlobalMessage(owner.username + " is " + ChatColor.Dark_Red + "DOMINATING " + ChatColor.White + p.username);
+										}
+										else
+											ctf.dominate.get(owner).put(p, 1);
 									}
-									main.GlobalMessage(this.owner.username + " &4EXPLODED&f " + p.username);
-									kills++;
-									if (!ctf.dominate.containsKey(owner))
-										ctf.dominate.put(owner, new HashMap<Player, Integer>());
-									if (ctf.dominate.get(owner).containsKey(p)) {
-										int temp = ctf.dominate.get(owner).get(p);
-										temp++;
-										ctf.dominate.get(owner).remove(p);
-										ctf.dominate.get(owner).put(p, temp);
-										if (temp % 4 == 0)
-											main.GlobalMessage(owner.username + " is " + ChatColor.Dark_Red + " DOMINATING " + ChatColor.White + p.username);
-									}
-									else
-										ctf.dominate.get(owner).put(p, 1);
 								}
 							}
 						}
 						cache.remove(loc);
 					}
-					
+
 					if (getLevel().getTile(xx, yy, zz).name.equals("TNTEXE") && (xx != getX() || yy != getY() || zz != getZ())) {
 						TNT_Explode tnt = (TNT_Explode)getLevel().getTile(xx, yy, zz);
 						tnt.wait = 0;
 					}
 					else if (isInSafe(xx, yy, zz, (main.INSTANCE.getCurrentGame() instanceof CTF ? (CTF)main.INSTANCE.getCurrentGame() : null)) || isTeamFlag(getLevel().getTile(xx, yy, zz), (main.INSTANCE.getCurrentGame() instanceof CTF ? (CTF)main.INSTANCE.getCurrentGame() : null)))
 						continue;
+					else if (getLevel().getTile(xx, yy, zz).getVisibleBlock() == 7)
+						continue;
 					else if (rand.nextInt(11) <= 8 && (xx != getX() || yy != getY() || zz != getZ()))
 						Player.GlobalBlockChange((short)xx, (short)yy, (short)zz, Block.getBlock("Air"), getLevel(), server);
 					else if (rand.nextInt(11) <= 4 && (xx != getX() || yy != getY() || zz != getZ()))
 						Player.GlobalBlockChange((short)xx, (short)yy, (short)zz, new Explosion((byte)10, "exe"), getLevel(), server);
-					
+
 				}
 			}
 		}
 		cache.clear();
 		if (ctf != null) {
-			ctf.setKillStreak(owner, kills);
+			int killstreak = ctf.getKillStreak(owner);
+			killstreak += kills;
+			ctf.setKillStreak(owner, killstreak);
 			String message = "";
 			for (KillStreak k : KillStreak.values()) {
 				if (kills == k.getAmount()) {
@@ -178,18 +184,18 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 		}
 		return false;
 	}
-	
+
 	public class Vector {
 		int X;
 		int Y;
 		int Z;
-		
+
 		public Vector(int x, int y, int z) {
 			this.X = x;
 			this.Y = y;
 			this.Z = z;
 		}
-		
+
 		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof Vector) {
@@ -198,7 +204,7 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 			}
 			return false;
 		}
-		
+
 		@Override
 		public int hashCode() {
 			return X + Y + Z;

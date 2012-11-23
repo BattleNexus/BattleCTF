@@ -81,8 +81,19 @@ public class ConfigGraber {
 		}
 	}
 	
+	private static void createChildDirectories(String filepath) {
+		String[] dirs = filepath.split("\\/"); 
+		String path = "";
+		for (String directory : dirs) {
+			path += (path.equals("") ? directory : "/" + directory);
+			if (directory.indexOf(".") == -1 && !new File(path).exists())
+				new File(path).mkdir();
+		}
+	}
+	
 	public static void copyfile(String srFile, String dtFile){
 		try{
+			createChildDirectories(dtFile);
 			File f1 = new File(srFile);
 			File f2 = new File(dtFile);
 			InputStream in = new FileInputStream(f1);

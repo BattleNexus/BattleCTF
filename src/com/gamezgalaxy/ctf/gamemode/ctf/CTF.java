@@ -15,14 +15,17 @@ import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Random;
 
 import net.mcforge.chat.ChatColor;
 import net.mcforge.iomodel.Player;
 import net.mcforge.util.FileUtils;
+import net.mcforge.util.properties.Properties;
+import net.mcforge.world.Block;
+
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
 import com.gamezgalaxy.ctf.commands.shop.ShopItem;
+import com.gamezgalaxy.ctf.events.EventListener.Vector;
 import com.gamezgalaxy.ctf.events.PlayerTaggedEvent;
 import com.gamezgalaxy.ctf.exceptions.VoteDidntStartException;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
@@ -65,33 +68,33 @@ public class CTF extends Gamemode {
 		"net.mcforge.world.blocks.Orange"
 	};
 	private static final String DEFFAULT_PROPERTIES =
-	"#These are the reward settings for the CTF Gamemode.\n" +
-	"#The minium number of goals that are required per round\n" +
-	"Min_Goal_Requirement = 1\n"  +
-	"#The max number of goals that are required per round\n" +
-	"Max_Goal_Requirement = 5\n" +
-	"#The max number of EXP a player gets on flag capture\n" +
-	"Max_EXP_onCapture = 0\n" +
-	"#The max number of EXP a player loses when he drops the flag\n" +
-	"Max_EXP-Lose_onDrop = 0\n" +
-	"#The max number of EXP on a round won\n" +
-	"Max_EXP_onWin = 50\n" +
-	"#The max number of GP's a player gets on flag capture\n" +
-	"Max_GP_onCapture = 1\n" +
-	"#The max number of GP's a player loses when a flag is dropped\n" +
-	"Max_GP-Lose_onDrop = 0\n" +
-	"#The max number of GP's a player gets on a round won\n" +
-	"Max_GP_onWin = 10\n" +
-	"#The max number of EXP a player loses when tagged\n" +
-	"Max_EXP-Lose_onTagged = 0\n" +
-	"#The max number of EXP a player gets when tagging someone\n" +
-	"Max_EXP_onTag = 5\n" +
-	"#The max number of GP's a player gets when tagging someone\n" +
-	"Max_GP_onTag = 2\n" +
-	"#The max number of GP's a player loses when tagged\n" +
-	"Max_GP-Lose_onTagged = 0\n" +
-	"#The number of maps to put into voting at the end of a round\n" +
-	"Vote_Count = 3\n";
+			"#These are the reward settings for the CTF Gamemode.\n" +
+					"#The minium number of goals that are required per round\n" +
+					"Min_Goal_Requirement = 1\n"  +
+					"#The max number of goals that are required per round\n" +
+					"Max_Goal_Requirement = 5\n" +
+					"#The max number of EXP a player gets on flag capture\n" +
+					"Max_EXP_onCapture = 0\n" +
+					"#The max number of EXP a player loses when he drops the flag\n" +
+					"Max_EXP-Lose_onDrop = 0\n" +
+					"#The max number of EXP on a round won\n" +
+					"Max_EXP_onWin = 50\n" +
+					"#The max number of GP's a player gets on flag capture\n" +
+					"Max_GP_onCapture = 1\n" +
+					"#The max number of GP's a player loses when a flag is dropped\n" +
+					"Max_GP-Lose_onDrop = 0\n" +
+					"#The max number of GP's a player gets on a round won\n" +
+					"Max_GP_onWin = 10\n" +
+					"#The max number of EXP a player loses when tagged\n" +
+					"Max_EXP-Lose_onTagged = 0\n" +
+					"#The max number of EXP a player gets when tagging someone\n" +
+					"Max_EXP_onTag = 5\n" +
+					"#The max number of GP's a player gets when tagging someone\n" +
+					"Max_GP_onTag = 2\n" +
+					"#The max number of GP's a player loses when tagged\n" +
+					"Max_GP-Lose_onTagged = 0\n" +
+					"#The number of maps to put into voting at the end of a round\n" +
+					"Vote_Count = 3\n";
 	public ArrayList<Team> teams = new ArrayList<Team>();
 	public HashMap<Player, Team> holders = new HashMap<Player, Team>();
 	public HashMap<Player, HashMap<Player, Integer>> dominate = new HashMap<Player, HashMap<Player, Integer>>();
@@ -175,27 +178,34 @@ public class CTF extends Gamemode {
 		psw.print(DEFFAULT_PROPERTIES);
 		psw.close();
 	}
+	private int getSetting(String key, int defaultkey, Properties prop) {
+		if (prop.hasValue(key))
+			return prop.getInt(key);
+		else {
+			prop.addSetting(key, defaultkey);
+			return defaultkey;
+		}
+	}
+	private int getSetting(String key, String setting, Properties prop) {
+		return getSetting(key, Integer.parseInt(setting), prop);
+	}
 	private void loadProperties() throws IOException {
 		Properties prop = new Properties();
-		FileInputStream in = new FileInputStream("properties/ctf.properties");
-		prop.load(in);
-		in.close();
-		this.mingoal = Integer.parseInt(prop.getProperty("Min_Goal_Requirement", "1"));
-		this.maxgoal = Integer.parseInt(prop.getProperty("Max_Goal_Requirement", "5"));
-		this.maxexpcap = Integer.parseInt(prop.getProperty("Max_EXP_onCapture", "0"));
-		this.maxexpdrop = Integer.parseInt(prop.getProperty("Max_EXP-Lose_onDrop", "0"));
-		this.maxexpwin = Integer.parseInt(prop.getProperty("Max_EXP_onWin", "50"));
-		this.maxgpcap = Integer.parseInt(prop.getProperty("Max_GP_onCapture", "1"));
-		this.maxgpdrop = Integer.parseInt(prop.getProperty("Max_GP-Lose_onDrop", "0"));
-		this.maxgpwin = Integer.parseInt(prop.getProperty("Max_GP_onWin", "10"));
-		this.maxexplosetag = Integer.parseInt(prop.getProperty("Max_EXP-Lose_onTagged", "0"));
-		this.maxexptag = Integer.parseInt(prop.getProperty("Max_EXP_onTag", "0"));
-		this.maxgptag = Integer.parseInt(prop.getProperty("Max_GP_onTag", "2"));
-		this.maxgplosetag = Integer.parseInt(prop.getProperty("Max_GP-Lose_onTagged", "0"));
-		this.votecount = Integer.parseInt(prop.getProperty("Vote_Count", "3"));
-		FileOutputStream out = new FileOutputStream("properties/ctf.properties");
-		prop.store(out, "These are the reward settings for the CTF Gamemode.");
-		out.close();
+		prop.load("ctf.config");
+		this.mingoal = getSetting("Min_Goal_Requirement", "1", prop);
+		this.maxgoal = getSetting("Max_Goal_Requirement", "5", prop);
+		this.maxexpcap = getSetting("Max_EXP_onCapture", "0", prop);
+		this.maxexpdrop = getSetting("Max_EXP-Lose_onDrop", "0", prop);
+		this.maxexpwin = getSetting("Max_EXP_onWin", "50", prop);
+		this.maxgpcap = getSetting("Max_GP_onCapture", "1", prop);
+		this.maxgpdrop = getSetting("Max_GP-Lose_onDrop", "0", prop);
+		this.maxgpwin = getSetting("Max_GP_onWin", "10", prop);
+		this.maxexplosetag = getSetting("Max_EXP-Lose_onTagged", "0", prop);
+		this.maxexptag = getSetting("Max_EXP_onTag", "0", prop);
+		this.maxgptag = getSetting("Max_GP_onTag", "2", prop);
+		this.maxgplosetag = getSetting("Max_GP-Lose_onTagged", "0", prop);
+		this.votecount = getSetting("Vote_Count", "3", prop);
+		prop.save("ctf.config");
 	}
 	public void resetClients() {
 		for (Player p : main.INSTANCE.getServer().players) {
@@ -233,6 +243,29 @@ public class CTF extends Gamemode {
 			main.GlobalMessage(a.getMessage());
 			a.performaction(this);
 		}
+		ArrayList<Vector> toremove = new ArrayList<Vector>();
+		for (Vector v : getMain().getEvents().tempflags) {
+			if (v.tick >= 3000) {
+				Block b = getMap().level.getTile(v.X, v.Y, v.Z);
+				for (Team t : teams) {
+					if (t.flagblock == b) {
+						resetFlag(t);
+						toremove.add(v);
+						main.GlobalMessage(ChatColor.Dark_Green + "[GBot] " + t.name + "'s " + ChatColor.White + "flag has been reset");
+						break;
+					}
+				}
+			}
+			else
+				v.tick++;
+		}
+		if (toremove.size() > 0) {
+			for (Vector v : toremove) {
+				if (getMain().getEvents().tempflags.contains(v))
+					getMain().getEvents().tempflags.remove(v);
+			}
+			toremove.clear();
+		}
 	}
 
 	public void tag(Player tagger, Player tagged) {
@@ -258,111 +291,7 @@ public class CTF extends Gamemode {
 			e.printStackTrace();
 		}
 		main.GlobalMessage(tagger.username + " &2TAGGED&f " + tagged.username);
-	}
-	
-	public void rewardPlayer(Player p, int amount) {
-		setValue(p, "points", amount, true);
-		saveValue(p, "points");
-	}
-	public int getPoints(Player p) {
-		return getValue(p, "points");
-	}
-	
-	public int getKillStreak(Player p) {
-		return getValue(p, "killstreak");
-	}
-	
-	public void setKillStreak(Player p, int amount) {
-		setValue(p, "killstreak", amount, false);
-	}
-	
-	public void addCapture(Player p) {
-		setValue(p, "capture", 1, true);
-		saveValue(p, "capture");
-		setValue(p, "caps", 1, true);
-	}
-	
-	public void addDrop(Player p) {
-		setValue(p, "drop", 1, true);
-		saveValue(p, "drop");
-		setValue(p, "balls", 1, true);
-	}
-	
-	public int getCapture(Player p) {
-		return getValue(p, "capture");
-	}
-	
-	public int getDrop(Player p) {
-		return getValue(p, "drop");
-	}
-	
-	public void addEXP(Player p, int amount) {
-		setValue(p, "exp", amount, true);
-		saveValue(p, "exp");
-	}
-	public void resetEXP(Player p) {
-		setValue(p, "exp", 0, false);
-	}
-	
-	public void levelUp(Player p) {
-		setValue(p, "level", 1, true);
-		saveValue(p, "level");
-	}
-	
-	public int getEXP(Player p) {
-		return getValue(p, "exp");
-	}
-	
-	public int getLevel(Player p) {
-		return getValue(p, "level");
-	}
-	
-	public int getRequiredEXP(Player p) {
-		int lvl = getLevel(p);
-		int required = 0;
-		for (int i = lvl; i > 0; --i)
-			required += (lvl * 100) / 2;
-		required += lvl * 100;
-		return required;
-	}
-	
-	public int capturesThisRound(Player p) {
-		return getValue(p, "caps");
-	}
-	
-	public void resetCapturesthisRound(Player p) {
-		setValue(p, "caps", 0, false);
-	}
-	
-	public int dropsThisRound(Player p) {
-		return getValue(p, "balls");
-	}
-	
-	public void resetDropsthisRound(Player p) {
-		setValue(p, "balls", 0, false);
-	}
-	
-	public void setValue(Player p, String setting, int value, boolean add) {
-		if (add) {
-			int points = getValue(p, setting);
-			points += value;
-			p.setValue(setting, points);
-		}
-		else
-			p.setValue(setting, value);
-	}
-	public void saveValue(Player p, String setting) {
-		try {
-			p.saveValue(setting);
-		} catch (SQLException e) { main.INSTANCE.getServer().Log("Could not save " + p.username + " " + setting + "..."); } catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	public int getValue(Player p, String setting) {
-		int points = 0;
-		if (p.getValue(setting) != null)
-			points = p.getValue(setting);
-		return points;
+		main.INSTANCE.getEvents().tagged.add(tagged);
 	}
 
 	public void resetFlag(Team t) {
@@ -373,13 +302,17 @@ public class CTF extends Gamemode {
 	public void roundEnd() {
 		main.INSTANCE.getServer().Log("Round end!");
 		main.GlobalMessage(ChatColor.Dark_Green + "The game is over!");
-		main.GlobalMessage("The " + getWinner().name + ChatColor.White + " has won this round!");
-		for (Player p : getWinner().members) {
-			if (maxgpwin > 0)
-				rewardPlayer(p, RANDOM.nextInt(this.maxgpwin));
-			if (maxexpwin > 0)
-				addEXP(p, RANDOM.nextInt(this.maxexpwin) * teams.size());
+		if (getWinner() != null) {
+			main.GlobalMessage("The " + getWinner().name + ChatColor.White + " has won this round!");
+			for (Player p : getWinner().members) {
+				if (maxgpwin > 0)
+					rewardPlayer(p, RANDOM.nextInt(this.maxgpwin));
+				if (maxexpwin > 0)
+					addEXP(p, RANDOM.nextInt(this.maxexpwin) * teams.size());
+			}
 		}
+		else
+			main.GlobalMessage("No one that round..");
 		for (Team t : teams) { 
 			t.points = 0;
 		}
@@ -415,7 +348,7 @@ public class CTF extends Gamemode {
 		}
 		super.dispose();
 	}
-	
+
 	private void vote() throws VoteDidntStartException, InterruptedException {
 		Voter v = new Voter(this, main.INSTANCE.getServer());
 		v.setMapCount(votecount);
@@ -431,7 +364,7 @@ public class CTF extends Gamemode {
 		v.reset();
 		Thread.sleep(5000);
 	}
-	
+
 	public Team getWinner() {
 		for (Team t : teams) {
 			if (t.points >= goal)
@@ -458,53 +391,36 @@ public class CTF extends Gamemode {
 		@Override
 		public void run() {
 			while (running) {
-				for (Team t : teams) {
-					for (Player p : t.members) {
-						if (!started) {
-							if (t.safe.isSafe(p))
-								t.spawnPlayer(p);
-						}
-						else {
-							if (getEXP(p) >= getRequiredEXP(p)) {
-								resetEXP(p);
-								levelUp(p);
-								p.sendMessage(ChatColor.Bright_Green + "Level Up!");
-								int level = getLevel(p);
-								String message;
-								for (ShopItem item : main.INSTANCE.getShop().items) {
-									if (item.getLevel() < level)
-										message = item.getLevelUpMessage(p);
-									else
-										message = item.checkUnlock(level);
-									if (message == null || message.equals(""))
-										continue;
-									p.sendMessage(ChatColor.Bright_Green + "+ " + message);
-								}
+				try {
+					for (Team t : teams) {
+						for (int i = 0; i < t.members.size(); i++) {
+							Player p = t.members.get(i);
+							if (!started) {
+								if (t.safe.isSafe(p))
+									t.spawnPlayer(p);
 							}
-							if (t.isSafe(p)) { //If he's inside his own field
-								int minx = p.getBlockX() - 2;
-								int maxx = p.getBlockX() + 2;
-								int miny = p.getBlockY() - 2;
-								int maxy = p.getBlockY() + 2;
-								int minz = p.getBlockZ() - 2;
-								int maxz = p.getBlockZ() + 2;
-								for (Player tagged : main.INSTANCE.getServer().players) {
-									if (t.members.contains(tagged))
-										continue;
-									if (getTeam(tagged) == null)
-										continue;
-									if (tagged.getBlockX() > minx && tagged.getBlockX() < maxx && tagged.getBlockY() > miny && tagged.getBlockY() < maxy && tagged.getBlockZ() > minz && tagged.getBlockZ() < maxz)
-										tag(p, tagged);
+							else {
+								if (getEXP(p) >= getRequiredEXP(p)) {
+									resetEXP(p);
+									levelUp(p);
+									p.sendMessage(ChatColor.Bright_Green + "Level Up!");
+									int level = getLevel(p);
+									String message;
+									for (ShopItem item : main.INSTANCE.getShop().items) {
+										if (item.getLevel() < level)
+											message = item.getLevelUpMessage(p);
+										else
+											message = item.checkUnlock(level);
+										if (message == null || message.equals(""))
+											continue;
+										p.sendMessage(ChatColor.Bright_Green + "+ " + message);
+									}
 								}
 							}
 						}
 					}
-				}
-				try {
 					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				} catch (Exception e) { }
 			}
 		}
 	}
@@ -515,7 +431,7 @@ public class CTF extends Gamemode {
 		if (this.maxgpcap > 0)
 			rewardPlayer(player, RANDOM.nextInt(this.maxgpcap));
 	}
-	
+
 	public void punishDrop(Player player) {
 		if (this.maxexpdrop > 0)
 			addEXP(player, RANDOM.nextInt(this.maxexpdrop) * -1);

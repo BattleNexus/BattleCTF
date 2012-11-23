@@ -20,6 +20,7 @@ import net.mcforge.API.player.PlayerMoveEvent;
 import net.mcforge.API.server.ServerStartedEvent;
 import net.mcforge.chat.ChatColor;
 import net.mcforge.iomodel.Player;
+import net.mcforge.server.Tick;
 import net.mcforge.world.Block;
 import net.mcforge.world.PlaceMode;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
@@ -28,9 +29,10 @@ import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
 import com.gamezgalaxy.ctf.gamemode.ctf.utl.Team;
 import com.gamezgalaxy.ctf.main.main;
 
-public class EventListener implements Listener {
-	private HashMap<Player, Integer[]> flagfloat = new HashMap<Player, Integer[]>();
-	private ArrayList<Vector> tempflags = new ArrayList<Vector>();
+public class EventListener implements Listener, Tick {
+	private HashMap<Player, Data> flagfloat = new HashMap<Player, Data>();
+	public ArrayList<Vector> tempflags = new ArrayList<Vector>();
+	public ArrayList<Player> tagged = new ArrayList<Player>();
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
 		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
@@ -38,24 +40,52 @@ public class EventListener implements Listener {
 		final CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
 		if (event.getPlayer().getLevel() != ctf.getMap().level)
 			return;
+		checkTag(event.getPlayer(), ctf);
 		if (flagfloat.containsKey(event.getPlayer())) {
-			Integer[] temp = flagfloat.get(event.getPlayer());
-			int x = temp[0].intValue();
-			int y = temp[1].intValue();
-			int z = temp[2].intValue();
+			Data temp = flagfloat.get(event.getPlayer());
+			int x = temp.pos[0];
+			int y = temp.pos[1];
+			int z = temp.pos[2];
+			Block oldb = temp.oldblock;
+			if (oldb == null)
+				oldb = Block.getBlock("Air");
 			if (x != event.getPlayer().getBlockX() || y != event.getPlayer().getBlockY() || z != event.getPlayer().getBlockZ()) {
-				Player.GlobalBlockChange((short)x, (short)(y + 3), (short)z, Block.getBlock("Air"), event.getPlayer().getLevel(), event.getPlayer().getServer());
+				Player.GlobalBlockChange((short)x, (short)(y + 3), (short)z, oldb, event.getPlayer().getLevel(), event.getPlayer().getServer());
 				x = event.getPlayer().getBlockX();
 				y = event.getPlayer().getBlockY();
 				z = event.getPlayer().getBlockZ();
+				Block tile = event.getPlayer().getLevel().getTile(x, y + 3, z);
 				Player.GlobalBlockChange((short)x, (short)(y + 3), (short)z, ctf.holders.get(event.getPlayer()).flagblock, event.getPlayer().getLevel(), event.getPlayer().getServer());
-				Integer[] temp1 = new Integer[] {
-					x,
-					y,
-					z
+				Data temp1 = new Data();
+				temp1.pos = new int[] {
+						x,
+						y,
+						z
 				};
+				temp1.oldblock = tile;
 				flagfloat.remove(event.getPlayer());
 				flagfloat.put(event.getPlayer(), temp1);
+			}
+		}
+	}
+	public void checkTag(Player p, CTF ctf) {
+		Team t = ctf.getTeam(p);
+		if (t.isSafe(p)) { //If he's inside his own field
+			int minx = p.getBlockX() - 2;
+			int maxx = p.getBlockX() + 2;
+			int miny = p.getBlockY() - 2;
+			int maxy = p.getBlockY() + 2;
+			int minz = p.getBlockZ() - 2;
+			int maxz = p.getBlockZ() + 2;
+			for (Player tagged : main.INSTANCE.getServer().players) {
+				if (main.INSTANCE.getEvents().tagged.contains(tagged))
+					continue;
+				if (t.members.contains(tagged))
+					continue;
+				if (ctf.getTeam(tagged) == null)
+					continue;
+				if (tagged.getBlockX() > minx && tagged.getBlockX() < maxx && tagged.getBlockY() > miny && tagged.getBlockY() < maxy && tagged.getBlockZ() > minz && tagged.getBlockZ() < maxz)
+					ctf.tag(p, tagged);
 			}
 		}
 	}
@@ -63,19 +93,20 @@ public class EventListener implements Listener {
 		flagfloat.clear();
 	}
 	public void drop(final Player p, final Block block) {
-		Integer[] temp = flagfloat.get(p);
+		Data temp = flagfloat.get(p);
 		flagfloat.remove(p);
-		final int x = temp[0].intValue();
-		final int y = temp[1].intValue();
-		final int z = temp[2].intValue();
-		Player.GlobalBlockChange((short)x, (short)(y + 3), (short)z, Block.getBlock("Air"), p.getLevel(), p.getServer());
+		final int x = temp.pos[0];
+		final int y = temp.pos[1];
+		final int z = temp.pos[2];
+		final Block oldb = temp.oldblock;
+		Player.GlobalBlockChange((short)x, (short)(y + 3), (short)z, oldb, p.getLevel(), p.getServer());
 		Thread t = new Thread() {
 			
 			@Override
 			public void run() {
 				int temp = y + 3;
 				System.out.println(p.getLevel().getTile(x, temp - 1, z).name);
-				while (p.getLevel().getTile(x, temp - 1, z).name.equals("Air") || p.getLevel().getTile(x, temp - 1, z).getVisableBlock() == 10) {
+				while (p.getLevel().getTile(x, temp - 1, z).name.equals("Air") || p.getLevel().getTile(x, temp - 1, z).getVisibleBlock() == 10) {
 					Player.GlobalBlockChange((short)x, (short)temp, (short)z, Block.getBlock("Air"), p.getLevel(), p.getServer());
 					temp--;
 					Player.GlobalBlockChange((short)x, (short)temp, (short)z, block, p.getLevel(), p.getServer());
@@ -121,26 +152,39 @@ public class EventListener implements Listener {
 		final short Y = event.getY();
 		final short Z = event.getZ();
 		Vector v = new Vector(X, Y, Z);
+		for (Team t : ctf.teams) {
+			if (t.safe.isSafe(X, Y, Z)) {
+				event.getPlayer().sendMessage(ChatColor.Dark_Red + "You cant build inside the a safezone!");
+				event.setCancel(true);
+				return;
+			}
+		}
 		if (event.getPlaceType() == PlaceMode.BREAK) {
 			for (Team t : ctf.teams) {
 				if (t.flagx == X && t.flagy == Y && t.flagz == Z && t != team && !holding && event.getPlayer().getLevel().getTile(X, Y, Z) == t.flagblock) {
 					main.GlobalMessage(event.getPlayer().username + " took the " + t.name +"'s FLAG!");
 					ctf.holders.put(event.getPlayer(), t);
-					flagfloat.put(event.getPlayer(), new Integer[] {
-						0,
-						0,
-						0
-					});
+					Data d = new Data();
+					d.pos = new int[] {
+							0,
+							0,
+							0
+					};
+					d.oldblock = Block.getBlock("Air");
+					flagfloat.put(event.getPlayer(), d);
 				}
 				else if (tempflags.contains(v) && t != team && !holding && event.getPlayer().getLevel().getTile(X, Y, Z) == t.flagblock) {
 					tempflags.remove(v);
 					main.GlobalMessage(event.getPlayer().username + " picked up " + t.name +"'s FLAG!");
 					ctf.holders.put(event.getPlayer(), t);
-					flagfloat.put(event.getPlayer(), new Integer[] {
-						0,
-						0,
-						0
-					});
+					Data d = new Data();
+					d.pos = new int[] {
+							0,
+							0,
+							0
+					};
+					d.oldblock = Block.getBlock("Air");
+					flagfloat.put(event.getPlayer(), d);
 				}
 				else if (tempflags.contains(v) && t == team && event.getPlayer().getLevel().getTile(X, Y, Z) == t.flagblock) {
 					tempflags.remove(v);
@@ -158,12 +202,13 @@ public class EventListener implements Listener {
 				else if (t.flagx == X && t.flagy == Y && t.flagz == Z && t == team && holding && event.getPlayer().getLevel().getTile(X, Y, Z) == t.flagblock) {
 					main.GlobalMessage(event.getPlayer().username + " returned the flag!");
 					event.setCancel(true);
-					Integer[] temp = flagfloat.get(event.getPlayer());
+					Data temp = flagfloat.get(event.getPlayer());
 					flagfloat.remove(event.getPlayer());
-					int x = temp[0].intValue();
-					int y = temp[1].intValue();
-					int z = temp[2].intValue();
-					Player.GlobalBlockChange((short)x, (short)(y + 3), (short)z, Block.getBlock("Air"), event.getPlayer().getLevel(), event.getPlayer().getServer());
+					int x = temp.pos[0];
+					int y = temp.pos[1];
+					int z = temp.pos[2];
+					Block b = temp.oldblock;
+					Player.GlobalBlockChange((short)x, (short)(y + 3), (short)z, b, event.getPlayer().getLevel(), event.getPlayer().getServer());
 					t.points++;
 					ctf.addCapture(event.getPlayer());
 					ctf.rewardCap(event.getPlayer());
@@ -177,16 +222,16 @@ public class EventListener implements Listener {
 			}
 		}
 		else {
-			if (event.getBlock().getVisableBlock() == 46 && !ctf.tntholders.containsKey(event.getPlayer())) {
+			if (event.getBlock().getVisibleBlock() == 46 && !ctf.tntholders.containsKey(event.getPlayer())) {
 				TNT_Explode t = new TNT_Explode(event.getPlayer(), event.getServer());
 				t.setPos(event.getX(), event.getY(), event.getZ());
 				event.setBlock(t);
 				ctf.tntholders.put(event.getPlayer(), t);
 				event.getPlayer().sendMessage(ChatColor.Aqua + " Place " + ChatColor.Red + "\"Brick\" " + ChatColor.Aqua + "to detonate the TNT");
 			}
-			else if (event.getBlock().getVisableBlock() == 46 && ctf.tntholders.containsKey(event.getPlayer()))
+			else if (event.getBlock().getVisibleBlock() == 46 && ctf.tntholders.containsKey(event.getPlayer()))
 				event.setCancel(true);
-			else if (event.getBlock().getVisableBlock() == 45 && ctf.tntholders.containsKey(event.getPlayer())) {
+			else if (event.getBlock().getVisibleBlock() == 45 && ctf.tntholders.containsKey(event.getPlayer())) {
 				if (!event.getLevel().getTile(ctf.tntholders.get(event.getPlayer()).getX(), ctf.tntholders.get(event.getPlayer()).getY(), ctf.tntholders.get(event.getPlayer()).getZ()).name.equals("TNTEXE"))
 					ctf.tntholders.remove(event.getPlayer());
 				else {
@@ -298,9 +343,10 @@ public class EventListener implements Listener {
 		return biggest;
 	}
 	public class Vector {
-		int X;
-		int Y;
-		int Z;
+		public int X;
+		public int Y;
+		public int Z;
+		public int tick;
 		
 		public Vector(int x, int y, int z) {
 			this.X = x;
@@ -321,5 +367,14 @@ public class EventListener implements Listener {
 		public int hashCode() {
 			return X + Y + Z;
 		}
+	}
+	@Override
+	public void tick() {
+		tagged.clear();
+	}
+	
+	private class Data {
+		public int[] pos;
+		public Block oldblock;
 	}
 }

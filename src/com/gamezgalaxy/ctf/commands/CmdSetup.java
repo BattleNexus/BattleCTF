@@ -12,6 +12,7 @@ import net.mcforge.API.plugin.PlayerCommand;
 import net.mcforge.chat.ChatColor;
 import net.mcforge.iomodel.Player;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
+import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.utl.ConfigGraber;
 
 @ManualLoad
@@ -23,7 +24,12 @@ public class CmdSetup extends PlayerCommand {
 			player.sendMessage("/setup <mapname> - Setup a new map for CTF!");
 			return;
 		}
-		Thread s = new Setup(player, args[0]);
+		String name = "";
+		for (String arg : args) {
+			name += arg + " ";
+		}
+		name.trim();
+		Thread s = new Setup(player, name);
 		s.start();
 	}
 
@@ -161,32 +167,32 @@ public class CmdSetup extends PlayerCommand {
 					int bX = p.getBlockX();
 					int bY = p.getBlockY();
 					int bZ = p.getBlockZ();
-					while (p.getLevel().getTile(bX + 1, bY, bZ).getVisableBlock() == 0) {
+					while (p.getLevel().getTile(bX + 1, bY, bZ).getVisibleBlock() == 0) {
 						bX++;
 					}
 					config.add("safezone." + CTF.SYSTEM_TEAM_NAME[x] + ".bigx = " + bX);
 					bX = p.getBlockX();
-					while (p.getLevel().getTile(bX - 1, bY, bZ).getVisableBlock() == 0) {
+					while (p.getLevel().getTile(bX - 1, bY, bZ).getVisibleBlock() == 0) {
 						bX--;
 					}
 					config.add("safezone." + CTF.SYSTEM_TEAM_NAME[x] + ".smallx = " + bX);
 					bX = p.getBlockX();
-					while (p.getLevel().getTile(bX, bY + 1, bZ).getVisableBlock() == 0) {
+					while (p.getLevel().getTile(bX, bY + 1, bZ).getVisibleBlock() == 0) {
 						bY++;
 					}
 					config.add("safezone." + CTF.SYSTEM_TEAM_NAME[x] + ".bigy = " + bY);
 					bY = p.getBlockY();
-					while (p.getLevel().getTile(bX, bY - 1, bZ).getVisableBlock() == 0) {
+					while (p.getLevel().getTile(bX, bY - 1, bZ).getVisibleBlock() == 0) {
 						bY--;
 					}
 					config.add("safezone." + CTF.SYSTEM_TEAM_NAME[x] + ".smally = " + bY);
 					bY = p.getBlockY();
-					while (p.getLevel().getTile(bX, bY, bZ + 1).getVisableBlock() == 0) {
+					while (p.getLevel().getTile(bX, bY, bZ + 1).getVisibleBlock() == 0) {
 						bZ++;
 					}
 					config.add("safezone." + CTF.SYSTEM_TEAM_NAME[x] + ".bigz = " + bZ);
 					bZ = p.getBlockZ();
-					while (p.getLevel().getTile(bX, bY, bZ - 1).getVisableBlock() == 0) {
+					while (p.getLevel().getTile(bX, bY, bZ - 1).getVisibleBlock() == 0) {
 						bZ--;
 					}
 					config.add("safezone." + CTF.SYSTEM_TEAM_NAME[x] + ".smallz = " + bZ);
@@ -196,13 +202,14 @@ public class CmdSetup extends PlayerCommand {
 				p.sendMessage("Adding gamemodes..");
 				config.add("core.gamemode = com.gamezgalaxy.ctf.gamemode.ctf.CTF");
 				config.add("stalemate.action = com.gamezgalaxy.ctf.gamemode.ctf.stalemate.actions.DropFlags");
+				config.add("stalemate.action = com.gamezgalaxy.ctf.gamemode.ctf.stalemate.actions.NextTag");
 				p.sendMessage("Making levels..");
 				if (!new File("backups/ctf/" + ConfigGraber.getMapmax("config/")).exists())
 					new File("backups/ctf/" + ConfigGraber.getMapmax("config/")).mkdirs();
 				if (!new File("backups/ctf2/" + ConfigGraber.getMapmax("config/")).exists())
 					new File("backups/ctf2/" + ConfigGraber.getMapmax("config/")).mkdirs();
-				ConfigGraber.copyfile("levels/" + p.getLevel().name + ".ggs", "ctf/" + ConfigGraber.getMapmax("config/") + "/ctf.ggs");
-				ConfigGraber.copyfile("levels/" + p.getLevel().name + ".ggs", "ctf2/" + ConfigGraber.getMapmax("config/") + "/ctf2.ggs");
+				ConfigGraber.copyfile("levels/" + p.getLevel().name + ".ggs", "backups/ctf/" + ConfigGraber.getMapmax("config/") + "/ctf.ggs");
+				ConfigGraber.copyfile("levels/" + p.getLevel().name + ".ggs", "backups/ctf2/" + ConfigGraber.getMapmax("config/") + "/ctf2.ggs");
 				p.sendMessage("Bumping..");
 				ConfigGraber.bump("config/");
 				p.sendMessage("Generating config file..");
@@ -214,6 +221,7 @@ public class CmdSetup extends PlayerCommand {
 				p.sendMessage("Stopping..");
 				Thread.sleep(500);
 				p.sendMessage(map + " has been added!");
+				main.INSTANCE.start();
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {

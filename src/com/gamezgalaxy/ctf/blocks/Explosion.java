@@ -34,7 +34,7 @@ public class Explosion extends PhysicsBlock {
 			if (rand.nextInt(11) <= 8)
 				Player.GlobalBlockChange((short)getX(), (short)getY(), (short)getZ(), Block.getBlock("Air"), getLevel(), server);
 			else {
-				if (getLevel().getTile(getX(), getY() - 1, getZ()).getVisableBlock() == 0)
+				if (getLevel().getTile(getX(), getY() - 1, getZ()).getVisibleBlock() == 0)
 					move(getX(), getY() - 1, getZ());
 			}
 		}
@@ -43,7 +43,7 @@ public class Explosion extends PhysicsBlock {
 	}
 
 	@Override
-	public byte getVisableBlock() {
+	public byte getVisibleBlock() {
 		return 10;
 	}
 	@Override

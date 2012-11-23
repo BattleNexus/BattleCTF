@@ -8,8 +8,11 @@
 package com.gamezgalaxy.ctf.gamemode;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 
 import net.mcforge.API.plugin.Game;
+import net.mcforge.iomodel.Player;
 import net.mcforge.world.Level;
 import com.gamezgalaxy.ctf.main.main;
 import com.gamezgalaxy.ctf.map.Map;
@@ -40,14 +43,14 @@ public abstract class Gamemode {
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_DAT_BACKUP_PATH).exists()) {
 			getMain().getServer().Log("Converting .dat..");
-			Level l = Level.convertDAT(CONVERT_DAT_BACKUP_PATH);
-			l.save();
-			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
+			//Level l = Level.convertDAT(CONVERT_DAT_BACKUP_PATH);
+			//l.save();
+			//ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
 			getMain().getServer().Log("Done!");
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_BACKUP_PATH).exists()) {
 			getMain().getServer().Log("Converting .lvl...");
-			Level l = Level.convertLVL(CONVERT_BACKUP_PATH);
+			Level l = Level.convertLVL(CONVERT_BACKUP_PATH, getMain().getServer());
 			l.save();
 			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
 			getMain().getServer().Log("Done!");
@@ -107,6 +110,115 @@ public abstract class Gamemode {
 	
 	public String getGameName() {
 		return (name == null || name.equals("")) ? getClass().getSimpleName() : name;
+	}
+	
+	public void rewardPlayer(Player p, int amount) {
+		setValue(p, "points", amount, true);
+		saveValue(p, "points");
+	}
+	public int getPoints(Player p) {
+		return getValue(p, "points");
+	}
+	
+	public int getKillStreak(Player p) {
+		return getValue(p, "killstreak");
+	}
+	
+	public void setKillStreak(Player p, int amount) {
+		setValue(p, "killstreak", amount, false);
+	}
+	
+	public void addCapture(Player p) {
+		setValue(p, "capture", 1, true);
+		saveValue(p, "capture");
+		setValue(p, "caps", 1, true);
+	}
+	
+	public void addDrop(Player p) {
+		setValue(p, "drop", 1, true);
+		saveValue(p, "drop");
+		setValue(p, "balls", 1, true);
+	}
+	
+	public int getCapture(Player p) {
+		return getValue(p, "capture");
+	}
+	
+	public int getDrop(Player p) {
+		return getValue(p, "drop");
+	}
+	
+	public void addEXP(Player p, int amount) {
+		setValue(p, "exp", amount, true);
+		saveValue(p, "exp");
+	}
+	public void resetEXP(Player p) {
+		setValue(p, "exp", 0, false);
+	}
+	
+	public void levelUp(Player p) {
+		setValue(p, "level", 1, true);
+		saveValue(p, "level");
+	}
+	
+	public int getEXP(Player p) {
+		return getValue(p, "exp");
+	}
+	
+	public int getLevel(Player p) {
+		return getValue(p, "level");
+	}
+	
+	public int getRequiredEXP(Player p) {
+		int lvl = getLevel(p);
+		int required = 0;
+		for (int i = lvl; i > 0; --i)
+			required += (lvl * 100) / 2;
+		required += lvl * 100;
+		return required;
+	}
+	
+	public int capturesThisRound(Player p) {
+		return getValue(p, "caps");
+	}
+	
+	public void resetCapturesthisRound(Player p) {
+		setValue(p, "caps", 0, false);
+	}
+	
+	public int dropsThisRound(Player p) {
+		return getValue(p, "balls");
+	}
+	
+	public void resetDropsthisRound(Player p) {
+		setValue(p, "balls", 0, false);
+	}
+	
+	public void setValue(Player p, String setting, int value, boolean add) {
+		if (add) {
+			int points = getValue(p, setting);
+			points += value;
+			p.setValue(setting, points);
+		}
+		else
+			p.setValue(setting, value);
+	}
+	public void saveValue(Player p, String setting) {
+		try {
+			p.saveValue(setting);
+		} catch (SQLException e) { 
+			main.INSTANCE.getServer().Log("Could not save " + p.username + " " + setting + "..."); 
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public int getValue(Player p, String setting) {
+		Integer points = 0;
+		if (p.getValue(setting) != null) {
+			points = p.getValue(setting);
+		}
+		return points.intValue();
 	}
 
 }
