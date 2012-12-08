@@ -10,8 +10,7 @@ package com.gamezgalaxy.ctf.gamemode;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-
-import net.mcforge.API.plugin.Game;
+import net.mcforge.API.plugin.Plugin;
 import net.mcforge.iomodel.Player;
 import net.mcforge.world.Level;
 import com.gamezgalaxy.ctf.main.main;
@@ -21,7 +20,7 @@ import com.gamezgalaxy.ctf.map.utl.ConfigGraber;
 public abstract class Gamemode {
 	Map _map;
 	
-	public Game parent;
+	public Plugin parent;
 	
 	private String name;
 	
@@ -43,9 +42,9 @@ public abstract class Gamemode {
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_DAT_BACKUP_PATH).exists()) {
 			getMain().getServer().Log("Converting .dat..");
-			//Level l = Level.convertDAT(CONVERT_DAT_BACKUP_PATH);
-			//l.save();
-			//ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
+			Level l = Level.convertDat(CONVERT_DAT_BACKUP_PATH);
+			l.save();
+			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
 			getMain().getServer().Log("Done!");
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_BACKUP_PATH).exists()) {
@@ -78,7 +77,7 @@ public abstract class Gamemode {
 		return _map;
 	}
 	
-	public Game getParent() {
+	public Plugin getParent() {
 		return parent;
 	}
 	

@@ -15,11 +15,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
-
-import net.mcforge.API.plugin.Game;
+import net.mcforge.API.plugin.Plugin;
 import net.mcforge.chat.Messages;
 import net.mcforge.iomodel.Player;
 import net.mcforge.server.Server;
+import net.mcforge.server.Tick;
 import net.mcforge.system.updater.Updatable;
 import net.mcforge.system.updater.UpdateType;
 
@@ -29,7 +29,7 @@ import com.gamezgalaxy.ctf.events.EventListener;
 import com.gamezgalaxy.ctf.gamemode.Gamemode;
 import com.gamezgalaxy.ctf.map.Map;
 
-public class main extends Game implements Updatable {
+public class main extends Plugin implements Updatable, Tick {
 
 	Messages globalchat;
 	int tick = 30000;
@@ -43,7 +43,7 @@ public class main extends Game implements Updatable {
 	private Shop _shop;
 	boolean ctfmap = true;
 	private String welcome;
-	private int index;
+	private int index = -1;
 	public main(Server server) {
 		super(server);
 		globalchat = new Messages(server);
@@ -75,9 +75,6 @@ public class main extends Game implements Updatable {
 		getServer().getCommandHandler().addCommand(new CmdShop());
 		getServer().getCommandHandler().addCommand(new CmdFlagReset());
 		getServer().getCommandHandler().addCommand(new CmdSetup());
-		welcome = getServer().getSystemProperties().getValue("welcome-message");
-		if (welcome.equals("null"))
-			getServer().getSystemProperties().addSetting("welcome-message", "Welcome to my CTF server!");
 	}
 	
 	public void start() {
@@ -94,9 +91,12 @@ public class main extends Game implements Updatable {
 			getServer().Log("[CTF] Add a map using /setup !");
 			return;
 		}
+		String map = maps.get(random.nextInt(maps.size()));
+		setNextMap(map);
 		run = new Gametick(this);
 		running = true;
 		run.start();
+		getServer().Add(this);
 	}
 	
 	public Gamemode getCurrentGame() {
@@ -127,6 +127,7 @@ public class main extends Game implements Updatable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		getServer().Remove(this);
 	}
 
 	@Override
@@ -157,9 +158,9 @@ public class main extends Game implements Updatable {
 	}
 	private class Gametick extends Thread {
 		
-		Game game;
+		Plugin game;
 		
-		public Gametick(Game game) { this.game = game; }
+		public Gametick(Plugin game) { this.game = game; }
 		@Override
 		public void run() {
 			Map m = null;

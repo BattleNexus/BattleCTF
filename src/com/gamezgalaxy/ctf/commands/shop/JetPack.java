@@ -100,7 +100,7 @@ public class JetPack extends ShopItem {
 				}
 				for (Vector v : buffer) {
 					if (!temp.contains(v)) {
-						player.SendBlockChange((short)v.X, (short)v.Y, (short)v.Z, player.getLevel().getTile(v.X, v.Y, v.Z));
+						player.sendBlockChange((short)v.X, (short)v.Y, (short)v.Z, player.getLevel().getTile(v.X, v.Y, v.Z));
 						toremove.add(v);
 					}
 				}
@@ -109,7 +109,7 @@ public class JetPack extends ShopItem {
 				}
 				for (Vector v : temp) {
 					if (!buffer.contains(v)) {
-						player.SendBlockChange((short)v.X, (short)v.Y, (short)v.Z, Block.getBlock("Glass"));
+						player.sendBlockChange((short)v.X, (short)v.Y, (short)v.Z, Block.getBlock("Glass"));
 						buffer.add(v);
 					}
 				}
@@ -121,7 +121,7 @@ public class JetPack extends ShopItem {
 				i++;
 			}
 			for (Vector v : buffer) {
-				player.SendBlockChange((short)v.X, (short)v.Y, (short)v.Z, player.getLevel().getTile(v.X, v.Y, v.Z));
+				player.sendBlockChange((short)v.X, (short)v.Y, (short)v.Z, player.getLevel().getTile(v.X, v.Y, v.Z));
 			}
 			buffer.clear();
 			toremove.clear();

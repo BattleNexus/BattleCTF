@@ -57,7 +57,7 @@ public class Cloak extends ShopItem implements Listener {
 			if (current == t)
 				continue;
 			for (Player pp : current.members) {
-				pp.Despawn(p);
+				pp.despawn(p);
 			}
 		}
 		int seconds = ctf.getLevel(p) * 2 + 15;

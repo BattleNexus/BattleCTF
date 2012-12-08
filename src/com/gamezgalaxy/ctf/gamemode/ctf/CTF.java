@@ -43,7 +43,7 @@ public class CTF extends Gamemode {
 		"&2Green Team",
 		ChatColor.Purple + "Purple Team",
 		ChatColor.Yellow + "Yellow Team",
-		ChatColor.Grey + "Iron Team",
+		ChatColor.Gray + "Iron Team",
 		ChatColor.Orange + "Gold Team",
 		"Team Derpy"
 	};
@@ -164,7 +164,6 @@ public class CTF extends Gamemode {
 		main.INSTANCE.getServer().Log("Round will require " + goal + " points");
 		main.GlobalMessage("&2[GBot] In this round, your team must score &4" + goal + " &2points!");
 		main.GlobalMessage("&2[GBot] The round has started! Good luck!");
-		resetClients();
 		for (Team t : teams) {
 			for (Player p : t.members) {
 				p.sendMessage("You are on the " + t.name);
@@ -206,16 +205,6 @@ public class CTF extends Gamemode {
 		this.maxgplosetag = getSetting("Max_GP-Lose_onTagged", "0", prop);
 		this.votecount = getSetting("Vote_Count", "3", prop);
 		prop.save("ctf.config");
-	}
-	public void resetClients() {
-		for (Player p : main.INSTANCE.getServer().players) {
-			for (Player pp : main.INSTANCE.getServer().players) {
-				if (p != pp && p.getLevel() == pp.getLevel()) {
-					pp.Despawn(p);
-					pp.spawnPlayer(p);
-				}
-			}
-		}
 	}
 
 	@Override

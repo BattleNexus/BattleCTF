@@ -16,6 +16,7 @@ import net.mcforge.API.level.PlayerJoinedLevel;
 import net.mcforge.API.player.PlayerBlockChangeEvent;
 import net.mcforge.API.player.PlayerCommandEvent;
 import net.mcforge.API.player.PlayerDisconnectEvent;
+import net.mcforge.API.player.PlayerLoginEvent;
 import net.mcforge.API.player.PlayerMoveEvent;
 import net.mcforge.API.server.ServerStartedEvent;
 import net.mcforge.chat.ChatColor;
@@ -38,6 +39,8 @@ public class EventListener implements Listener, Tick {
 		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
 			return;
 		final CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
+		if (!ctf.isRunning())
+			return;
 		if (event.getPlayer().getLevel() != ctf.getMap().level)
 			return;
 		checkTag(event.getPlayer(), ctf);
@@ -69,7 +72,11 @@ public class EventListener implements Listener, Tick {
 		}
 	}
 	public void checkTag(Player p, CTF ctf) {
+		if (ctf == null)
+			return;
 		Team t = ctf.getTeam(p);
+		if (t == null)
+			return;
 		if (t.isSafe(p)) { //If he's inside his own field
 			int minx = p.getBlockX() - 2;
 			int maxx = p.getBlockX() + 2;
@@ -310,6 +317,14 @@ public class EventListener implements Listener, Tick {
 			t.members.remove(event.getPlayer());
 			main.GlobalMessage(ChatColor.Dark_Red + event.getPlayer().username + " has left the " + t.name);
 		}
+	}
+	
+	@EventHandler
+	public void onConnect(PlayerLoginEvent event) {
+		event.getPlayer().sendMessage("Welcome to " + ChatColor.Dark_Red + "BattleNexus " + ChatColor.White + " Capture the Flag!");
+		final CTF ctf = (CTF)main.INSTANCE.getCurrentGame();
+		for (Team t : ctf.teams)
+			event.getPlayer().sendMessage("Type /" + t.system_name + " to join the " + t.name);
 	}
 	
 	public Team getBiggest() {
