@@ -1,5 +1,7 @@
 package com.gamezgalaxy.ctf.blocks;
 
+import java.util.Random;
+
 import net.mcforge.iomodel.Player;
 import net.mcforge.server.Server;
 import net.mcforge.world.PhysicsBlock;
@@ -12,9 +14,16 @@ public class Mine extends TNT_Explode {
 		super(ID, name, server, owner);
 	}
 	
+	
+	public Mine(Player owner, Server server) {
+		super((byte)34, "Mine", server, owner);
+	}
+	
 	@Override
 	public PhysicsBlock clone(Server s) {
 		Mine m = new Mine((byte)34, "Mine", s, owner);
+		m.wait = new Random().nextInt(40 - 5) + 5;
+		m.size = 1;
 		return m;
 	}
 	

@@ -7,6 +7,9 @@
  ******************************************************************************/
 package com.gamezgalaxy.ctf.events;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,6 +27,8 @@ import net.mcforge.iomodel.Player;
 import net.mcforge.server.Tick;
 import net.mcforge.world.Block;
 import net.mcforge.world.PlaceMode;
+
+import com.gamezgalaxy.ctf.blocks.Mine;
 import com.gamezgalaxy.ctf.blocks.TNT_Explode;
 import com.gamezgalaxy.ctf.commands.shop.ShopItem;
 import com.gamezgalaxy.ctf.gamemode.ctf.CTF;
@@ -34,6 +39,10 @@ public class EventListener implements Listener, Tick {
 	private HashMap<Player, Data> flagfloat = new HashMap<Player, Data>();
 	public ArrayList<Vector> tempflags = new ArrayList<Vector>();
 	public ArrayList<Player> tagged = new ArrayList<Player>();
+	
+	public EventListener() {
+		main.INSTANCE.getServer().Add(this);
+	}
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
 		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
@@ -84,7 +93,8 @@ public class EventListener implements Listener, Tick {
 			int maxy = p.getBlockY() + 2;
 			int minz = p.getBlockZ() - 2;
 			int maxz = p.getBlockZ() + 2;
-			for (Player tagged : main.INSTANCE.getServer().players) {
+			for (int i = 0; i < main.INSTANCE.getServer().players.size(); i++) {
+				final Player tagged = main.INSTANCE.getServer().players.get(i);
 				if (main.INSTANCE.getEvents().tagged.contains(tagged))
 					continue;
 				if (t.members.contains(tagged))
@@ -229,6 +239,36 @@ public class EventListener implements Listener, Tick {
 			}
 		}
 		else {
+			if (event.getBlock().getVisibleBlock() == 34) {
+				if (!event.getPlayer().hasValue("mine")) {
+					event.getPlayer().sendMessage(ChatColor.Dark_Red + "You have no mines!");
+					event.getPlayer().sendMessage("Buy some in the /shop!");
+					event.setCancel(true);
+					return;
+				}
+				int value = event.getPlayer().getValue("mine");
+				if (value == 0) {
+					event.getPlayer().sendMessage(ChatColor.Dark_Red + "You have no mines!");
+					event.getPlayer().sendMessage("Buy some in the /shop!");
+					event.setCancel(true);
+					return;
+				}
+				value--;
+				Mine m = new Mine(event.getPlayer(), event.getServer());
+				m.setPos(event.getX(), event.getY(), event.getZ());
+				event.setBlock(m);
+				event.getPlayer().sendMessage(ChatColor.Aqua + " You have " + ChatColor.Dark_Red + value + ChatColor.Aqua + " mines left!");
+				event.getPlayer().setValue("mine", value);
+				try {
+					event.getPlayer().saveValue("mine");
+				} catch (NotSerializableException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			if (event.getBlock().getVisibleBlock() == 46 && !ctf.tntholders.containsKey(event.getPlayer())) {
 				TNT_Explode t = new TNT_Explode(event.getPlayer(), event.getServer());
 				t.setPos(event.getX(), event.getY(), event.getZ());
