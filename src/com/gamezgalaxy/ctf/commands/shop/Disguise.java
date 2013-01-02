@@ -12,6 +12,10 @@ import com.gamezgalaxy.ctf.main.main;
 @ManualLoad
 public class Disguise extends ShopItem {
 
+	public Disguise(Shop parent) {
+		super(parent);
+	}
+
 	@Override
 	public String getShopName() {
 		return "Disguise";

@@ -11,6 +11,10 @@ import com.gamezgalaxy.ctf.main.main;
 @ManualLoad
 public class Rank extends ShopItem {
 
+	public Rank(Shop parent) {
+		super(parent);
+	}
+
 	@Override
 	public String getShopName() {
 		return "Rank";
@@ -26,6 +30,30 @@ public class Rank extends ShopItem {
 			return true;
 		}
 		p.sendMessage("That group couldnt be found!");
+		return false;
+	}
+	
+	@Override
+	public boolean showItem(Player p) {
+		/*final Group current = p.getGroup();
+		Group nexthighest = null;
+		for (Group g : Group.getGroupList()) {
+			if (rankBuyable(g) && g.permissionlevel > current.permissionlevel) {
+				if (nexthighest == null) nexthighest = g;
+				if (nexthighest.permissionlevel > g.permissionlevel) nexthighest = g;
+			}
+		}
+		if (nexthighest == null || !rankBuyable(nexthighest) || !nexthighest.name.equals(getName()))
+			return false;*/
+		return super.showItem(p);
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean rankBuyable(Group g) {
+		for (ShopItem s : getParent().items) {
+			if (s.getName().equals(g.name))
+				return true;
+		}
 		return false;
 	}
 

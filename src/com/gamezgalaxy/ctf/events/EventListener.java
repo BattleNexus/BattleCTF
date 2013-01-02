@@ -93,8 +93,8 @@ public class EventListener implements Listener, Tick {
 			int maxy = p.getBlockY() + 2;
 			int minz = p.getBlockZ() - 2;
 			int maxz = p.getBlockZ() + 2;
-			for (int i = 0; i < main.INSTANCE.getServer().players.size(); i++) {
-				final Player tagged = main.INSTANCE.getServer().players.get(i);
+			for (int i = 0; i < main.INSTANCE.getServer().getPlayers().size(); i++) {
+				final Player tagged = main.INSTANCE.getServer().getPlayers().get(i);
 				if (main.INSTANCE.getEvents().tagged.contains(tagged))
 					continue;
 				if (t.members.contains(tagged))
@@ -240,13 +240,13 @@ public class EventListener implements Listener, Tick {
 		}
 		else {
 			if (event.getBlock().getVisibleBlock() == 34) {
-				if (!event.getPlayer().hasValue("mine")) {
+				if (!event.getPlayer().hasAttribute("mine")) {
 					event.getPlayer().sendMessage(ChatColor.Dark_Red + "You have no mines!");
 					event.getPlayer().sendMessage("Buy some in the /shop!");
 					event.setCancel(true);
 					return;
 				}
-				int value = event.getPlayer().getValue("mine");
+				int value = event.getPlayer().getAttribute("mine");
 				if (value == 0) {
 					event.getPlayer().sendMessage(ChatColor.Dark_Red + "You have no mines!");
 					event.getPlayer().sendMessage("Buy some in the /shop!");
@@ -258,9 +258,9 @@ public class EventListener implements Listener, Tick {
 				m.setPos(event.getX(), event.getY(), event.getZ());
 				event.setBlock(m);
 				event.getPlayer().sendMessage(ChatColor.Aqua + " You have " + ChatColor.Dark_Red + value + ChatColor.Aqua + " mines left!");
-				event.getPlayer().setValue("mine", value);
+				event.getPlayer().setAttribute("mine", value);
 				try {
-					event.getPlayer().saveValue("mine");
+					event.getPlayer().saveAttribute("mine");
 				} catch (NotSerializableException e) {
 					e.printStackTrace();
 				} catch (SQLException e) {
@@ -313,7 +313,7 @@ public class EventListener implements Listener, Tick {
 			for (int i = 0; i < ctf.teamcount; i++) {
 				if (CTF.SYSTEM_TEAM_NAME[i].equalsIgnoreCase(event.getCommand())) {
 					Team t = ctf.teams.get(i);
-					if (getBiggest() == t) {
+					if (t.members.size() > 0 && getBiggest() == t) {
 						event.getPlayer().sendMessage("&2[GBot] " + t.name + " &2is full!");
 						event.getPlayer().sendMessage("&2[GBot] Please join /" + getSmallest().system_name);
 						event.setCancel(true);

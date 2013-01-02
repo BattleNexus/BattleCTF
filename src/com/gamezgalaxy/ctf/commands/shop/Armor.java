@@ -13,6 +13,10 @@ import com.gamezgalaxy.ctf.gamemode.ctf.*;
 @ManualLoad
 public class Armor extends ShopItem {
 
+	public Armor(Shop parent) {
+		super(parent);
+	}
+
 	@Override
 	public String getShopName() {
 		return "Armor";

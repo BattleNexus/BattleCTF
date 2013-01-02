@@ -8,8 +8,6 @@
 package com.gamezgalaxy.ctf.gamemode.ctf;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
@@ -126,7 +124,7 @@ public class CTF extends Gamemode {
 		}
 		//Place each player on a team
 		int i = 0;
-		for (Player p : main.INSTANCE.getServer().players) {
+		for (Player p : main.INSTANCE.getServer().getPlayers()) {
 			if (i >= teamcount)
 				i = 0;
 			teams.get(i).members.add(p);
@@ -273,7 +271,7 @@ public class CTF extends Gamemode {
 		if (maxgplosetag > 0)
 			rewardPlayer(tagged, RANDOM.nextInt(this.maxgplosetag) * -1);
 		try {
-			tagger.saveValue("points");
+			tagger.saveAttribute("points");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -305,7 +303,7 @@ public class CTF extends Gamemode {
 		for (Team t : teams) { 
 			t.points = 0;
 		}
-		for (Player p : main.INSTANCE.getServer().players) {
+		for (Player p : main.INSTANCE.getServer().getPlayers()) {
 			int caps = getCapture(p);
 			if (caps == 0)
 				caps = 1;

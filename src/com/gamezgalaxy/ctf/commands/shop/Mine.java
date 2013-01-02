@@ -5,10 +5,16 @@ import java.io.NotSerializableException;
 import java.sql.SQLException;
 
 import net.mcforge.API.CommandExecutor;
+import net.mcforge.API.ManualLoad;
 import net.mcforge.chat.ChatColor;
 import net.mcforge.iomodel.Player;
 
+@ManualLoad
 public class Mine extends ShopItem {
+
+	public Mine(Shop parent) {
+		super(parent);
+	}
 
 	@Override
 	public String getShopName() {
@@ -17,15 +23,15 @@ public class Mine extends ShopItem {
 
 	@Override
 	public boolean run(Player p) {
-		if (p.hasValue("mine")) {
-			int value = p.getValue("mine");
+		if (p.hasAttribute("mine")) {
+			int value = p.getAttribute("mine");
 			value++;
-			p.setValue("mine", value);
+			p.setAttribute("mine", value);
 		}
 		else
-			p.setValue("mine", 1);
+			p.setAttribute("mine", 1);
 		try {
-			p.saveValue("mine");
+			p.saveAttribute("mine");
 		} catch (NotSerializableException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -34,7 +40,7 @@ public class Mine extends ShopItem {
 			e.printStackTrace();
 		}
 		p.sendMessage(ChatColor.Bright_Green + "+" + ChatColor.White + " You bought 1 mine!");
-		p.sendMessage("You have " + p.getValue("mine") + " mine(s)");
+		p.sendMessage("You have " + p.getAttribute("mine") + " mine(s)");
 		return true;
 	}
 

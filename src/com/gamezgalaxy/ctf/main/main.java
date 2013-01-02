@@ -148,7 +148,7 @@ public class main extends Plugin implements Updatable, Tick {
 		INSTANCE.globalchat.serverBroadcast(message);
 	}
 	public static void GlobalClear() {
-		for (Player p : INSTANCE.getServer().players)
+		for (Player p : INSTANCE.getServer().getPlayers())
 			p.clearChatScreen();
 	}
 	public static String secondsToTime(int sec) {
@@ -221,7 +221,7 @@ public class main extends Plugin implements Updatable, Tick {
 
 	@Override
 	public UpdateType getUpdateType() {
-		return UpdateType.Auto_Notify_Restart;
+		return UpdateType.Manual;
 	}
 
 	@Override

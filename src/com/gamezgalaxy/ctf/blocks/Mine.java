@@ -29,16 +29,16 @@ public class Mine extends TNT_Explode {
 	
 	@Override
 	public void tick() {
-		int xmax = getX() + 1;
+		int xmax = getX() + 2;
 		int ymax = getY() + 3;
-		int zmax = getZ() + 1;
-		int zmin = getZ() - 1;
-		int xmin = getX() - 1;
-		int ymin = getY() + 2;
-		for (int i = 0; i < server.players.size(); i++) {
-			if (server.players.get(i) == owner)
+		int zmax = getZ() + 2;
+		int zmin = getZ() - 2;
+		int xmin = getX() - 2;
+		int ymin = getY() + 3;
+		for (int i = 0; i < server.getPlayers().size(); i++) {
+			if (server.getPlayers().get(i) == owner)
 				continue;
-			final Player p = server.players.get(i);
+			final Player p = server.getPlayers().get(i);
 			if (p.getBlockX() >= xmin && p.getBlockX() <= xmax && p.getBlockY() >= ymin && p.getBlockY() <= ymax && p.getBlockZ() >= zmin && p.getBlockZ() <= zmax)
 				super.explode();
 		}

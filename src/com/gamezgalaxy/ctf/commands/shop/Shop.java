@@ -61,11 +61,11 @@ public class Shop {
 			if (jar.equals("null") || jar.equals("")) {
 				Class<?> class_ = Class.forName(classpath);
 				Class<? extends ShopItem> runClass = class_.asSubclass(ShopItem.class);
-				Constructor<? extends ShopItem> constructor = runClass.getConstructor();
-				item = constructor.newInstance();
+				Constructor<? extends ShopItem> constructor = runClass.getConstructor(Shop.class);
+				item = constructor.newInstance(this);
 			} else {
 				main.INSTANCE.getServer().Log("Loading from " + jar + "..");
-				item = JARLOADER.getType(jar, classpath, ShopItem.class);
+				item = JARLOADER.getObject(jar, classpath, ShopItem.class);
 			}
 			item.setLevel(level);
 			item.setPrice(price);

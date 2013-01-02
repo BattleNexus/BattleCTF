@@ -8,6 +8,16 @@ import com.gamezgalaxy.ctf.main.main;
 
 public abstract class ShopItem extends PlayerCommand {
 	
+	private Shop shop;
+	
+	public ShopItem(Shop parent) {
+		this.shop = parent;
+	}
+	
+	public Shop getParent() {
+		return shop;
+	}
+	
 	private int _price = 0;
 	
 	private int _level = 0;
@@ -76,6 +86,13 @@ public abstract class ShopItem extends PlayerCommand {
 	@Override
 	public int getDefaultPermissionLevel() {
 		return 0;
+	}
+	
+	public boolean showItem(Player p) {
+		if (!(main.INSTANCE.getCurrentGame() instanceof CTF))
+			return false;
+		final int level = ((CTF)main.INSTANCE.getCurrentGame()).getLevel(p);
+		return getLevel() <= level;
 	}
 	
 	@Override

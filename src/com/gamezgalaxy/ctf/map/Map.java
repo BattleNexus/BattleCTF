@@ -62,7 +62,7 @@ public class Map {
 						if (value.split("\\:").length == 2) {
 							String jarfile = value.split("\\:")[0];
 							String classpath = value.split("\\:")[1];
-							Gamemode game = JARLOADER.getType(jarfile, classpath, Gamemode.class);
+							Gamemode game = JARLOADER.getObject(jarfile, classpath, Gamemode.class);
 							games.add(game);
 						}
 						else {
@@ -180,7 +180,7 @@ public class Map {
 							if (value.split("\\:").length == 2) {
 								String jarfile = value.split("\\:")[0];
 								String classpath = value.split("\\:")[1];
-								Block block = JARLOADER.getType(jarfile, classpath, Block.class);
+								Block block = JARLOADER.getObject(jarfile, classpath, Block.class);
 								set.flagblock = block;
 							}
 							else {
@@ -195,7 +195,7 @@ public class Map {
 						if (value.split("\\:").length == 2) {
 							String jarfile = value.split("\\:")[0];
 							String classpath = value.split("\\:")[1];
-							Action action = JARLOADER.getType(jarfile, classpath, Action.class);
+							Action action = JARLOADER.getObject(jarfile, classpath, Action.class);
 							this.stalemate.add(action);
 						}
 						else {

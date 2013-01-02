@@ -197,14 +197,14 @@ public abstract class Gamemode {
 		if (add) {
 			int points = getValue(p, setting);
 			points += value;
-			p.setValue(setting, points);
+			p.setAttribute(setting, points);
 		}
 		else
-			p.setValue(setting, value);
+			p.setAttribute(setting, value);
 	}
 	public void saveValue(Player p, String setting) {
 		try {
-			p.saveValue(setting);
+			p.saveAttribute(setting);
 		} catch (SQLException e) { 
 			main.INSTANCE.getServer().Log("Could not save " + p.username + " " + setting + "..."); 
 			e.printStackTrace();
@@ -214,8 +214,8 @@ public abstract class Gamemode {
 	}
 	public int getValue(Player p, String setting) {
 		Integer points = 0;
-		if (p.getValue(setting) != null) {
-			points = p.getValue(setting);
+		if (p.getAttribute(setting) != null) {
+			points = p.getAttribute(setting);
 		}
 		return points.intValue();
 	}

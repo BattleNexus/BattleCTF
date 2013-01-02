@@ -16,6 +16,10 @@ import com.gamezgalaxy.ctf.main.main;
 @ManualLoad
 public class Cloak extends ShopItem implements Listener {
 
+	public Cloak(Shop parent) {
+		super(parent);
+	}
+
 	private boolean started = false;
 	private ArrayList<Player> cloaked = new ArrayList<Player>();
 	@Override

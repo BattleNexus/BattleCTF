@@ -69,8 +69,8 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 		exploding = true;
 		final Random rand = new Random();
 		HashMap<Vector, Player> cache = new HashMap<Vector, Player>();
-		for (int i = 0; i < server.players.size(); i++)
-			cache.put(new Vector(server.players.get(i).getBlockX(), server.players.get(i).getBlockY(), server.players.get(i).getBlockZ()), server.players.get(i));
+		for (int i = 0; i < server.getPlayers().size(); i++)
+			cache.put(new Vector(server.getPlayers().get(i).getBlockX(), server.getPlayers().get(i).getBlockY(), server.getPlayers().get(i).getBlockZ()), server.getPlayers().get(i));
 		final int X = getX();
 		final int Y = getY();
 		final int Z = getZ();

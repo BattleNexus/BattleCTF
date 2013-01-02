@@ -11,6 +11,10 @@ import net.mcforge.world.Block;
 @ManualLoad
 public class JetPack extends ShopItem {
 
+	public JetPack(Shop parent) {
+		super(parent);
+	}
+
 	@Override
 	public String getShopName() {
 		return "jetpack";
