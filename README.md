@@ -1,9 +1,9 @@
 CTF
 ===
 
-![GG Logo](http://www.gamezgalaxy.com/assets/icon.png)
+![BN Logo](http://www.battlenexus.net/community/public/style_images/5_BattleNexus.png)
 
-[gamezgalaxy.com][1]
+[battlenexus.net][1]
 
 This is a capture the flag plugin for the Classic Server Software [MCForge][3]
 
@@ -35,6 +35,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License, version 3
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-[1]: http://www.gamezgalaxy.com
+[1]: http://www.battlenexus.net
 [2]: http://www.gnu.org/licenses/gpl-3.0.html
 [3]: https://github.com/MCForge/MCForge-Core
