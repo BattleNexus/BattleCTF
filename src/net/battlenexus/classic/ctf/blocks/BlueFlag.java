@@ -7,7 +7,7 @@
  ******************************************************************************/
 package net.battlenexus.classic.ctf.blocks;
 
-import net.mcforge.world.blocks.Blue;
+import net.mcforge.world.blocks.classicmodel.Blue;
 
 public class BlueFlag extends Blue {
 

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package net.battlenexus.classic.ctf.blocks;
 
-import net.mcforge.world.blocks.Red;
+import net.mcforge.world.blocks.classicmodel.Red;
 
 public class RedFlag extends Red {
 	

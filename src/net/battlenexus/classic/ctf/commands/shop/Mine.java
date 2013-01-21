@@ -1,9 +1,5 @@
 package net.battlenexus.classic.ctf.commands.shop;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.sql.SQLException;
-
 import net.mcforge.API.CommandExecutor;
 import net.mcforge.API.ManualLoad;
 import net.mcforge.chat.ChatColor;
@@ -30,15 +26,7 @@ public class Mine extends ShopItem {
 		}
 		else
 			p.setAttribute("mine", 1);
-		try {
-			p.saveAttribute("mine");
-		} catch (NotSerializableException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		p.saveAttribute("mine");
 		p.sendMessage(ChatColor.Bright_Green + "+" + ChatColor.White + " You bought 1 mine!");
 		p.sendMessage("You have " + p.getAttribute("mine") + " mine(s)");
 		return true;

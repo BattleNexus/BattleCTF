@@ -17,7 +17,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-import net.mcforge.world.Block;
+import net.mcforge.world.blocks.Block;
 import net.mcforge.world.Level;
 import net.battlenexus.classic.ctf.exceptions.InvalidConfigException;
 import net.battlenexus.classic.ctf.gamemode.Gamemode;

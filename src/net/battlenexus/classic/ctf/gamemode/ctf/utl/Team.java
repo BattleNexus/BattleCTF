@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import net.mcforge.chat.ChatColor;
 import net.mcforge.chat.ColorFormatException;
 import net.mcforge.iomodel.Player;
-import net.mcforge.world.Block;
+import net.mcforge.world.blocks.Block;
 import net.battlenexus.classic.ctf.gamemode.ctf.CTF;
 import net.battlenexus.classic.ctf.main.main;
 import net.battlenexus.classic.ctf.map.SafeZone;

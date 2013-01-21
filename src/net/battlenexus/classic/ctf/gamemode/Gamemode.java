@@ -8,11 +8,10 @@
 package net.battlenexus.classic.ctf.gamemode;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import net.mcforge.API.plugin.Plugin;
 import net.mcforge.iomodel.Player;
 import net.mcforge.world.Level;
+import net.mcforge.world.model.ClassicLevel;
 import net.battlenexus.classic.ctf.main.main;
 import net.battlenexus.classic.ctf.map.Map;
 import net.battlenexus.classic.ctf.map.utl.ConfigGraber;
@@ -42,20 +41,21 @@ public abstract class Gamemode {
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_DAT_BACKUP_PATH).exists()) {
 			getMain().getServer().Log("Converting .dat..");
-			Level l = Level.convertDat(CONVERT_DAT_BACKUP_PATH);
+			Level l = ClassicLevel.convertDat(CONVERT_DAT_BACKUP_PATH);
 			l.save();
-			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
+			ConfigGraber.copyfile("levels/" + l.getName() + ".ggs", BACKUP_PATH);
 			getMain().getServer().Log("Done!");
 		}
 		else if (!new File(BACKUP_PATH).exists() && new File(CONVERT_BACKUP_PATH).exists()) {
 			getMain().getServer().Log("Converting .lvl...");
-			Level l = Level.convertLVL(CONVERT_BACKUP_PATH, getMain().getServer());
+			ClassicLevel l = new ClassicLevel();
+			l.loadLVL(CONVERT_BACKUP_PATH, getMain().getServer());
 			l.save();
-			ConfigGraber.copyfile("levels/" + l.name + ".ggs", BACKUP_PATH);
+			ConfigGraber.copyfile("levels/" + l.getName() + ".ggs", BACKUP_PATH);
 			getMain().getServer().Log("Done!");
 		}
 		ConfigGraber.copyfile(BACKUP_PATH, FINAL_PATH);
-		getMain().getServer().getLevelHandler().loadLevel(FINAL_PATH);
+		getMain().getServer().getLevelHandler().loadClassicLevel(FINAL_PATH);
 		//Set main level
 		if (getMain().getServer().getLevelHandler().findLevel((ctfmap ? "ctf" : "ctf2")) == null)
 			throw new Exception("Error Restoring from backup.");
@@ -203,14 +203,7 @@ public abstract class Gamemode {
 			p.setAttribute(setting, value);
 	}
 	public void saveValue(Player p, String setting) {
-		try {
-			p.saveAttribute(setting);
-		} catch (SQLException e) { 
-			main.INSTANCE.getServer().Log("Could not save " + p.username + " " + setting + "..."); 
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		p.saveAttribute(setting);
 	}
 	public int getValue(Player p, String setting) {
 		Integer points = 0;

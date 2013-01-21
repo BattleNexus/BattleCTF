@@ -4,8 +4,8 @@ import java.util.Random;
 
 import net.mcforge.iomodel.Player;
 import net.mcforge.server.Server;
-import net.mcforge.world.Block;
-import net.mcforge.world.PhysicsBlock;
+import net.mcforge.world.blocks.Block;
+import net.mcforge.world.blocks.PhysicsBlock;
 
 public class Explosion extends PhysicsBlock {
 
@@ -48,6 +48,14 @@ public class Explosion extends PhysicsBlock {
 	}
 	@Override
 	public boolean initAtStart() {
+		return false;
+	}
+	@Override
+	public int getTimeout() {
+		return 10;
+	}
+	@Override
+	public boolean inSeperateThread() {
 		return false;
 	}
 

@@ -208,8 +208,8 @@ public class CmdSetup extends PlayerCommand {
 					new File("backups/ctf/" + ConfigGraber.getMapmax("config/")).mkdirs();
 				if (!new File("backups/ctf2/" + ConfigGraber.getMapmax("config/")).exists())
 					new File("backups/ctf2/" + ConfigGraber.getMapmax("config/")).mkdirs();
-				ConfigGraber.copyfile("levels/" + p.getLevel().name + ".ggs", "backups/ctf/" + ConfigGraber.getMapmax("config/") + "/ctf.ggs");
-				ConfigGraber.copyfile("levels/" + p.getLevel().name + ".ggs", "backups/ctf2/" + ConfigGraber.getMapmax("config/") + "/ctf2.ggs");
+				ConfigGraber.copyfile("levels/" + p.getLevel().getName() + ".ggs", "backups/ctf/" + ConfigGraber.getMapmax("config/") + "/ctf.ggs");
+				ConfigGraber.copyfile("levels/" + p.getLevel().getName() + ".ggs", "backups/ctf2/" + ConfigGraber.getMapmax("config/") + "/ctf2.ggs");
 				p.sendMessage("Bumping..");
 				ConfigGraber.bump("config/");
 				p.sendMessage("Generating config file..");

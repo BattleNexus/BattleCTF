@@ -4,7 +4,7 @@ import java.util.Random;
 
 import net.mcforge.iomodel.Player;
 import net.mcforge.server.Server;
-import net.mcforge.world.PhysicsBlock;
+import net.mcforge.world.blocks.PhysicsBlock;
 
 public class Mine extends TNT_Explode {
 

@@ -19,7 +19,7 @@ import net.mcforge.API.plugin.Plugin;
 import net.mcforge.chat.Messages;
 import net.mcforge.iomodel.Player;
 import net.mcforge.server.Server;
-import net.mcforge.server.Tick;
+import net.mcforge.system.ticker.Tick;
 import net.mcforge.system.updater.Updatable;
 import net.mcforge.system.updater.UpdateType;
 
@@ -42,6 +42,7 @@ public class main extends Plugin implements Updatable, Tick {
 	public static final Random random = new Random();
 	private Shop _shop;
 	boolean ctfmap = true;
+	@SuppressWarnings("unused")
 	private String welcome;
 	private int index = -1;
 	public main(Server server) {
@@ -96,7 +97,7 @@ public class main extends Plugin implements Updatable, Tick {
 		run = new Gametick(this);
 		running = true;
 		run.start();
-		getServer().Add(this);
+		getServer().getTicker().addTick(this);
 	}
 	
 	public Gamemode getCurrentGame() {
@@ -127,7 +128,7 @@ public class main extends Plugin implements Updatable, Tick {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		getServer().Remove(this);
+		getServer().getTicker().removeTick(this);
 	}
 
 	@Override
@@ -136,12 +137,7 @@ public class main extends Plugin implements Updatable, Tick {
 			return;
 		if (gm.isRunning())
 			gm.tick();
-		if (tick <= 0) {
-			GlobalMessage("Visit &2www.gamezgalaxy.com");
-			tick = 30000;
-		}
-		else
-			tick--;
+		GlobalMessage("Visit &2www.gamezgalaxy.com");
 	}
 	
 	public static void GlobalMessage(String message) {
@@ -227,6 +223,16 @@ public class main extends Plugin implements Updatable, Tick {
 	@Override
 	public void unload() {
 		getServer().getPluginHandler().unload(this);
+	}
+
+	@Override
+	public boolean inSeperateThread() {
+		return false;
+	}
+
+	@Override
+	public int getTimeout() {
+		return 30000;
 	}
 
 }

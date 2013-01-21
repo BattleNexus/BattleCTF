@@ -7,9 +7,6 @@
  ******************************************************************************/
 package net.battlenexus.classic.ctf.events;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,8 +21,8 @@ import net.mcforge.API.player.PlayerMoveEvent;
 import net.mcforge.API.server.ServerStartedEvent;
 import net.mcforge.chat.ChatColor;
 import net.mcforge.iomodel.Player;
-import net.mcforge.server.Tick;
-import net.mcforge.world.Block;
+import net.mcforge.system.ticker.Tick;
+import net.mcforge.world.blocks.Block;
 import net.mcforge.world.PlaceMode;
 
 import net.battlenexus.classic.ctf.blocks.Mine;
@@ -41,7 +38,7 @@ public class EventListener implements Listener, Tick {
 	public ArrayList<Player> tagged = new ArrayList<Player>();
 	
 	public EventListener() {
-		main.INSTANCE.getServer().Add(this);
+		main.INSTANCE.getServer().getTicker().addTick(this);
 	}
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
@@ -259,15 +256,7 @@ public class EventListener implements Listener, Tick {
 				event.setBlock(m);
 				event.getPlayer().sendMessage(ChatColor.Aqua + " You have " + ChatColor.Dark_Red + value + ChatColor.Aqua + " mines left!");
 				event.getPlayer().setAttribute("mine", value);
-				try {
-					event.getPlayer().saveAttribute("mine");
-				} catch (NotSerializableException e) {
-					e.printStackTrace();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				event.getPlayer().saveAttribute("mine");
 			}
 			if (event.getBlock().getVisibleBlock() == 46 && !ctf.tntholders.containsKey(event.getPlayer())) {
 				TNT_Explode t = new TNT_Explode(event.getPlayer(), event.getServer());
@@ -431,5 +420,13 @@ public class EventListener implements Listener, Tick {
 	private class Data {
 		public int[] pos;
 		public Block oldblock;
+	}
+	@Override
+	public int getTimeout() {
+		return 500;
+	}
+	@Override
+	public boolean inSeperateThread() {
+		return false;
 	}
 }

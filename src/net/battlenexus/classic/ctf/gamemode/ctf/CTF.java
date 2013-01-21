@@ -10,7 +10,6 @@ package net.battlenexus.classic.ctf.gamemode.ctf;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -19,7 +18,7 @@ import net.mcforge.chat.ChatColor;
 import net.mcforge.iomodel.Player;
 import net.mcforge.util.FileUtils;
 import net.mcforge.util.properties.Properties;
-import net.mcforge.world.Block;
+import net.mcforge.world.blocks.Block;
 
 import net.battlenexus.classic.ctf.blocks.TNT_Explode;
 import net.battlenexus.classic.ctf.commands.shop.ShopItem;
@@ -270,13 +269,7 @@ public class CTF extends Gamemode {
 			rewardPlayer(tagger, RANDOM.nextInt(this.maxgptag));
 		if (maxgplosetag > 0)
 			rewardPlayer(tagged, RANDOM.nextInt(this.maxgplosetag) * -1);
-		try {
-			tagger.saveAttribute("points");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		tagger.saveAttribute("points");
 		main.GlobalMessage(tagger.username + " &2TAGGED&f " + tagged.username);
 		main.INSTANCE.getEvents().tagged.add(tagged);
 	}

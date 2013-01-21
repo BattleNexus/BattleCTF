@@ -6,8 +6,8 @@ import java.util.Random;
 import net.mcforge.chat.ChatColor;
 import net.mcforge.iomodel.Player;
 import net.mcforge.server.Server;
-import net.mcforge.world.Block;
-import net.mcforge.world.PhysicsBlock;
+import net.mcforge.world.blocks.Block;
+import net.mcforge.world.blocks.PhysicsBlock;
 import net.battlenexus.classic.ctf.events.Killable;
 import net.battlenexus.classic.ctf.events.PlayerDeathByTNTEvent;
 import net.battlenexus.classic.ctf.gamemode.ctf.CTF;
@@ -87,10 +87,10 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 							continue;
 						}
 						if (ctf == null)
-							p.setPos((short)(getLevel().spawnx * 32), (short)(getLevel().spawny * 32), (short)(getLevel().spawnz * 32));
+							p.setPos((short)(getLevel().getSpawnX() * 32), (short)(getLevel().getSpawnY() * 32), (short)(getLevel().getSpawnZ() * 32));
 						else {
 							if (ctf.isOnNoTeam(p))
-								p.setPos((short)(getLevel().spawnx * 32), (short)(getLevel().spawny * 32), (short)(getLevel().spawnz * 32));
+								p.setPos((short)(getLevel().getSpawnX() * 32), (short)(getLevel().getSpawnY() * 32), (short)(getLevel().getSpawnZ() * 32));
 							else {
 								Team t = ctf.getTeam(p);
 								if (t != ctf.getTeam(owner)) {
@@ -217,6 +217,14 @@ public class TNT_Explode extends PhysicsBlock implements Killable<TNT_Explode> {
 	}
 	@Override
 	public boolean initAtStart() {
+		return false;
+	}
+	@Override
+	public int getTimeout() {
+		return wait;
+	}
+	@Override
+	public boolean inSeperateThread() {
 		return false;
 	}
 }
